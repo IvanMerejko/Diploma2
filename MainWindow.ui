@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="loadFile">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -24,23 +24,18 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>LoadFile</string>
     </property>
    </widget>
-   <widget class="QTreeWidget" name="treeWidget">
+   <widget class="QTreeView" name="treeView">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>90</y>
+      <y>100</y>
       <width>801</width>
-      <height>501</height>
+      <height>461</height>
      </rect>
     </property>
-    <column>
-     <property name="text">
-      <string notr="true">1</string>
-     </property>
-    </column>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
