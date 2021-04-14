@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QShortcut>
 #include "TreeModel.h"
 
 QT_BEGIN_NAMESPACE
@@ -16,9 +17,16 @@ public:
     ~MainWindow();
 
 public slots:
-    void loadFile();
+   void loadFile();
+   void onRowSelected(const QModelIndex&);
+   void findWindow();
+private:
+   void setTreeView();
+   void createShortcurs();
+   void connectAllSlots();
 
 private:
     Ui::MainWindow *ui;
-    TreeModel* m_treeModel;
+    TreeModel m_treeModel;
+    QShortcut* m_keyFind;
 };

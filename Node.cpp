@@ -1,6 +1,19 @@
 #include "Node.h"
 #include <algorithm>
 
+namespace
+{
+   QString createRowData(const QString& name, const Attributes& attributes)
+   {
+      auto temp{name};
+      for (const auto& [attributeName, attributeValue] : attributes)
+      {
+         temp.append(" ").append(attributeName).append(" = ").append(attributeValue);
+      }
+      return temp;
+   }
+}
+
 Node::Node(const NodePtr parentItem)
     : m_parent{parentItem}
 {
@@ -33,12 +46,12 @@ int Node::GetColumnCount() const noexcept
 
 QVariant Node::GetData(int) const
 {
-    return m_name;
+    return createRowData(m_name, m_attributes);
 }
 
 int Node::GetRow()
 {
-    return m_parent ? 0 : m_parent->GetChilds().indexOf(sharedFromThis());
+    return m_parent ? m_parent->GetChilds().indexOf(sharedFromThis()) : 1;
 }
 
 const NodePtr Node::GetParentItem() const noexcept
@@ -53,5 +66,10 @@ void Node::SetAttributes(const Attributes &attributes)
 
 void Node::AddAttribute(const Attribute &attribute)
 {
-     m_attributes.push_back(attribute);
+   m_attributes.push_back(attribute);
+}
+
+const NodePtr Node::GetPtr() noexcept
+{
+   return sharedFromThis();
 }

@@ -5,40 +5,28 @@
 
 namespace
 {
-NodePtr parseXMLElement(QXmlStreamReader& xmlStream, NodePtr parent = nullptr)
+Nodes parseXMLElement(QXmlStreamReader& xmlStream, NodePtr parent = nullptr)
 {
-    qDebug() << "parseXMLElement";
-    NodePtr node = NodePtr::create(parent);
-    while (!xmlStream.atEnd() && !xmlStream.hasError())
+    Nodes nodes;
+    while(xmlStream.readNextStartElement())
     {
-        auto token = xmlStream.readNext();
-        if (token == QXmlStreamReader::StartDocument)
+        NodePtr node = NodePtr::create(parent);
+        node->SetName(xmlStream.name().toString());
+        node->SetValue(xmlStream.text().toString());
+        Attributes attributes;
+        for(const auto& attr : xmlStream.attributes())
         {
-            continue;
+            attributes.push_back(qMakePair(attr.name().toString(), attr.value().toString()));
         }
-        if (token == QXmlStreamReader::StartElement)
+        node->SetAttributes(attributes);
+        const auto childs = parseXMLElement(xmlStream, node);
+        for(const auto& child : childs)
         {
-            node->SetName(xmlStream.name().toString());
-            Attributes attributes;
-            for(const auto& attr : xmlStream.attributes())
-            {
-                attributes.push_back(qMakePair(attr.name().toString(),attr.value().toString()));
-            }
-            node->SetAttributes(attributes);
-            qDebug() << node->GetName();
+            node->AppendChild(child);
         }
-        else if(token == QXmlStreamReader::Characters)
-        {
-
-            auto child = parseXMLElement(xmlStream, node);
-            if (child && !child->GetName().isEmpty())
-            {
-                node->AppendChild(child);
-            }
-        }
+        nodes.append(node);
     }
-    qDebug() << "exit";
-    return node;
+    return nodes;
 }
 }
 
@@ -50,8 +38,11 @@ NodePtr DataBuilder::CreateXMLTree(QStringView fileName)
         QFile xmlFile{fileName.toString()};
         xmlFile.open(QIODevice::ReadOnly);
         QXmlStreamReader xmlReader{&xmlFile};
-        auto result = parseXMLElement(xmlReader);
-        return result;
+
+        auto root = NodePtr::create();
+        const auto result = parseXMLElement(xmlReader, root);
+        root->AppendChild(result[0]);
+        return root;
     }
     catch(...)
     {

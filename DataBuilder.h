@@ -4,6 +4,6 @@
 class DataBuilder
 {
 public:
-    static NodePtr CreateXMLTree(QStringView);
+   static NodePtr CreateXMLTree(QStringView);
 };
 

@@ -1,0 +1,7 @@
+<coupling algorithm="asd">
+  <P algorithm="serial">
+    <N name="flow1" type="GROUNDWATER_FLOW" />
+  </P>
+  <M name="flow1" type="GROUNDWATER_FLOW" />
+  <K name="flow1" type="GROUNDWATER_FLOW" />
+</coupling>

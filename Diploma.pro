@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -17,20 +17,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     DataBuilder.cpp \
+    Windows/NodeInfoWindow.cpp \
+    Windows/FindWindow.cpp \
+    Windows/MainWindow.cpp \
     Node.cpp \
     TreeModel.cpp \
-    main.cpp \
-    MainWindow.cpp
+    main.cpp
+
 
 HEADERS += \
     DataBuilder.h \
-    MainWindow.h \
+    Windows/NodeInfoWindow.h \
+    Windows/FindWindow.h \
+    Windows/MainWindow.h \
     Node.h \
     TreeModel.h \
     Types.h
 
 FORMS += \
-    MainWindow.ui
+    Forms/FindWindow.ui \
+    Forms/MainWindow.ui \
+    Forms/NodeInfoWindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
