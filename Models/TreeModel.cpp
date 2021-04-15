@@ -1,6 +1,15 @@
 #include "TreeModel.h"
 #include "DataBuilder.h"
 #include <QDebug>
+#include "Windows/NodeInfoWindow.h"
+
+namespace
+{
+   NodePtr getInternalPointer(const QModelIndex &index)
+   {
+      return static_cast<Node*>(index.internalPointer())->GetPtr();
+   }
+}
 
 TreeModel::TreeModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -8,7 +17,7 @@ TreeModel::TreeModel(QObject *parent)
 {
 }
 
-void TreeModel::LoadData(QStringView fileName)
+void TreeModel::LoadData(const QString& fileName)
 {
    m_rootItem = DataBuilder::CreateXMLTree(fileName);
    SimpleModelUpdate();
@@ -22,13 +31,13 @@ void TreeModel::SimpleModelUpdate()
 
 const NodePtr TreeModel::GetNode(const QModelIndex& index) const
 {
-   return static_cast<Node*>(index.internalPointer())->GetPtr();
+   return getInternalPointer(index);
 }
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
-    return !index.isValid() || role != Qt::DisplayRole ?
-        QVariant() : static_cast<Node*>(index.internalPointer())->GetData(index.column());
+    return !index.isValid() || role != TreeModelRoles::XML ?
+        QVariant() : getInternalPointer(index)->GetData(index.column());
 }
 
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
@@ -43,7 +52,7 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) con
         return QModelIndex();
     }
 
-    auto parentItem = !parent.isValid() ? m_rootItem.get() : static_cast<Node*>(parent.internalPointer());
+    auto parentItem = !parent.isValid() ? m_rootItem : getInternalPointer(parent);
     auto childItem = parentItem->GetChild(row);
     return childItem ? createIndex(row, column, childItem.get()) : QModelIndex();
 }
@@ -55,7 +64,7 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
          return QModelIndex();
     }
 
-     auto childItem = static_cast<Node*>(index.internalPointer());
+     auto childItem = getInternalPointer(index);
      auto parentItem = childItem->GetParentItem();
      return parentItem == m_rootItem ? QModelIndex() : createIndex(parentItem->GetRow(), 0, parentItem.get());
 }
@@ -66,7 +75,7 @@ int TreeModel::rowCount(const QModelIndex &parent) const
     {
         return 0;
     }
-    return !parent.isValid() ? m_rootItem->GetChildCount() : static_cast<Node*>(parent.internalPointer())->GetChildCount();
+    return !parent.isValid() ? m_rootItem->GetChildCount() : getInternalPointer(parent)->GetChildCount();
 }
 
 int TreeModel::columnCount(const QModelIndex &parent) const
@@ -75,5 +84,12 @@ int TreeModel::columnCount(const QModelIndex &parent) const
     {
         return 0;
     }
-    return parent.isValid() || !m_rootItem ? static_cast<Node*>(parent.internalPointer())->GetColumnCount() : m_rootItem->GetColumnCount();
+    return parent.isValid() || !m_rootItem ? getInternalPointer(parent)->GetColumnCount() : m_rootItem->GetColumnCount();
+}
+
+QHash<int, QByteArray> TreeModel::roleNames() const
+{
+   QHash<int, QByteArray> roles;
+   roles[static_cast<int>(TreeModelRoles::XML)] = "xml";
+   return roles;
 }

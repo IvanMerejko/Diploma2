@@ -1,23 +1,29 @@
 #pragma once
-#include <QDialog>
+#include <QQmlApplicationEngine>
+#include <QObject>
+#include "Models/AttributesTableModel.h"
 #include "Types.h"
 
-namespace Ui {
-class NodeInfoWindow;
-}
-
-class NodeInfoWindow : public QDialog
+class NodeInfoWindow : public QQmlApplicationEngine
 {
    Q_OBJECT
-
 public:
-   NodeInfoWindow(const NodePtr& node, QWidget *parent = nullptr);
-   ~NodeInfoWindow();
-
+   NodeInfoWindow(const NodePtr&);
+public slots:
+   void onNameChanged();
+   void onValueChanged();
 private:
-   void setData();
+   void initializeRootContext();
+   void initializeElements();
+   void initializeWindowPtr();
+   void createConnectionWithQmlObjects();
+   QObjectUp getPointerForElementByName(const QString &name);
 private:
-   Ui::NodeInfoWindow *ui;
    NodePtr m_node;
+   QObjectUp m_window;
+   QObjectUp m_nameField;
+   QObjectUp m_valueField;
+   AttributesTableModelPtr m_attributesModel;
 };
 
+using NodeInfoWindowPtr = QSharedPointer<NodeInfoWindow>;

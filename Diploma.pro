@@ -9,7 +9,7 @@ CONFIG += c++17
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-
+QT += quick
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -17,29 +17,31 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     DataBuilder.cpp \
-    Windows/NodeInfoWindow.cpp \
+    Models/AttributesTableModel.cpp \
+    Models/TreeModel.cpp \
+    Windows/MainWindowQml.cpp \
     Windows/FindWindow.cpp \
-    Windows/MainWindow.cpp \
     Node.cpp \
-    TreeModel.cpp \
+    Windows/NodeInfoWindow.cpp \
     main.cpp
 
 
 HEADERS += \
     DataBuilder.h \
-    Windows/NodeInfoWindow.h \
+    Models/AttributesTableModel.h \
+    Models/TreeModel.h \
+    Windows/MainWindowQml.h \
     Windows/FindWindow.h \
-    Windows/MainWindow.h \
     Node.h \
-    TreeModel.h \
-    Types.h
+    Types.h \
+    Windows/NodeInfoWindow.h
 
-FORMS += \
-    Forms/FindWindow.ui \
-    Forms/MainWindow.ui \
-    Forms/NodeInfoWindow.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+   qml.qrc

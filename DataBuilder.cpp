@@ -1,7 +1,9 @@
 #include "DataBuilder.h"
 #include <QXmlStreamReader>
+#include <QJsonDocument>
 #include <QFile>
 #include <QDebug>
+#include <QJsonObject>
 
 namespace
 {
@@ -28,6 +30,24 @@ Nodes parseXMLElement(QXmlStreamReader& xmlStream, NodePtr parent = nullptr)
     }
     return nodes;
 }
+
+Nodes parseJSONObject(const QJsonObject& jsonObject, NodePtr parent = nullptr)
+{
+   qDebug() << "parseJSONObject";
+    Nodes nodes;
+    for(const auto& value : jsonObject)
+    {
+       if (value.isObject())
+       {
+          parseJSONObject(value.toObject());
+       }
+       else if(value.isString())
+       {
+          qDebug() << value.toString();
+       }
+    }
+    return nodes;
+}
 }
 
 
@@ -47,5 +67,25 @@ NodePtr DataBuilder::CreateXMLTree(QStringView fileName)
     catch(...)
     {
         return nullptr;
-    }
+   }
+}
+
+NodePtr DataBuilder::CreateJSONTree(QStringView fileName)
+{
+   try
+   {
+       QFile jsonFile{fileName.toString()};
+       jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+       QString value = jsonFile.readAll();
+       auto jsonObject = QJsonDocument::fromJson(value.toUtf8()).object();
+       parseJSONObject(jsonObject);
+//       auto root = NodePtr::create();
+//       const auto result = parseXMLElement(xmlReader, root);
+//       root->AppendChild(result[0]);
+       return nullptr;
+   }
+   catch(...)
+   {
+       return nullptr;
+  }
 }

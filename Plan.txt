@@ -1,0 +1,11 @@
+16.04
+1) Load JSON files
+2) Check output for JSON files
+3) Start rules window
+4) Create needed classes
+
+17.04
+1) Finish rules window
+
+18.04
+1) Create search window + check all possible cases

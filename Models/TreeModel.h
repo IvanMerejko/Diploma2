@@ -6,10 +6,15 @@
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
+private:
+   enum TreeModelRoles
+   {
+       XML = Qt::UserRole + 1
+   };
 public:
     TreeModel(QObject *parent = nullptr);
 
-    void LoadData(QStringView fileName);
+    Q_INVOKABLE void LoadData(const QString& fileName);
     void SimpleModelUpdate();
 
     const NodePtr GetNode(const QModelIndex &index) const;
@@ -19,10 +24,13 @@ public:
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
 private:
     void setupModelData(const QStringList &lines, NodePtr parent);
 
     NodePtr m_rootItem;
 };
+
+using TreeModelPtr = QSharedPointer<TreeModel>;
 
