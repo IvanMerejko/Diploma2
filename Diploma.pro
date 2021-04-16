@@ -16,23 +16,26 @@ QT += quick
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    DataBuilder.cpp \
+    Data/DataBuilder.cpp \
+    Data/JsonNode.cpp \
+    Data/XMLNode.cpp \
     Models/AttributesTableModel.cpp \
     Models/TreeModel.cpp \
     Windows/MainWindowQml.cpp \
     Windows/FindWindow.cpp \
-    Node.cpp \
     Windows/NodeInfoWindow.cpp \
     main.cpp
 
 
 HEADERS += \
-    DataBuilder.h \
+    Data/BaseNode.h \
+    Data/DataBuilder.h \
+    Data/JsonNode.h \
+    Data/XMLNode.h \
     Models/AttributesTableModel.h \
     Models/TreeModel.h \
     Windows/MainWindowQml.h \
     Windows/FindWindow.h \
-    Node.h \
     Types.h \
     Windows/NodeInfoWindow.h
 

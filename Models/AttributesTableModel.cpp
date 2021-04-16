@@ -1,5 +1,5 @@
 #include "AttributesTableModel.h"
-#include "Node.h"
+#include "Data/XMLNode.h"
 #include <QDebug>
 
 namespace
@@ -33,7 +33,7 @@ QVariant AttributesTableModel::data(const QModelIndex& index, int role) const
    switch(static_cast<AttributeType>(role))
    {
       case AttributeType::Name:
-         return name;
+         return name ? *name : QVariant{};
       case AttributeType::Value:
          return value;
    }

@@ -1,6 +1,6 @@
 #include "NodeInfoWindow.h"
 #include <QQmlContext>
-#include "Node.h"
+#include "Data/XMLNode.h"
 namespace
 {
    constexpr auto AttributesModeStr = "attributtesModel";

@@ -21,6 +21,8 @@ Window
             anchors.fill: parent
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            font.family: "Times New Roman"
+            font.pixelSize: 14
             text: qsTr("Name")
         }
     }
@@ -49,6 +51,8 @@ Window
             anchors.fill: parent
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            font.family: "Times New Roman"
+            font.pixelSize: 14
             text: qsTr("Value")
         }
         border.width: 1
@@ -107,6 +111,8 @@ Window
                   anchors.fill: parent
                   horizontalAlignment: Text.AlignHCenter
                   verticalAlignment: Text.AlignVCenter
+                  font.family: "Times New Roman"
+                  font.pixelSize: 14
                   text: styleData.value
                }
             }
@@ -117,7 +123,9 @@ Window
                {
                   anchors.fill: parent
                   elide: Text.ElideRight
-                  text: styleData.value
+                  text: styleData.value ? styleData.value : ""
+                  font.family: "Times New Roman"
+                  font.pixelSize: 14
                   horizontalAlignment: Text.AlignHCenter
                   verticalAlignment: Text.AlignVCenter
                }

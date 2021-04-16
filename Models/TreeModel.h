@@ -1,7 +1,7 @@
 #pragma once
 #include <QAbstractItemModel>
 #include <QModelIndex>
-#include "Node.h"
+#include "Types.h"
 
 class TreeModel : public QAbstractItemModel
 {

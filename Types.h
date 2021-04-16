@@ -1,6 +1,7 @@
 #pragma once
 #include <QSharedPointer>
 #include <QVector>
+#include <optional>
 
 struct QObjectDeleter
 {
@@ -19,7 +20,7 @@ QObjectUp makeQObjectUP(Args&&... value)
     return std::unique_ptr<QObject, decltype(deleter)>(std::forward<Args>(value)..., deleter);
 }
 
-using NodePtr = QSharedPointer<class Node>;
+using NodePtr = QSharedPointer<class BaseNode>;
 using Nodes = QVector<NodePtr>;
 
 enum class AttributeType
@@ -27,5 +28,13 @@ enum class AttributeType
    Name = 0,
    Value
 };
-using Attribute = QPair<QString, QString>;
+enum class JsonNodeType
+{
+   Undefind = 0,
+   Value,
+   Object,
+   Array
+};
+
+using Attribute = QPair<std::optional<QString>, QString>;
 using Attributes = QVector<Attribute>;

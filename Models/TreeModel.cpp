@@ -1,5 +1,5 @@
 #include "TreeModel.h"
-#include "DataBuilder.h"
+#include "Data/DataBuilder.h"
 #include <QDebug>
 #include "Windows/NodeInfoWindow.h"
 
@@ -7,7 +7,7 @@ namespace
 {
    NodePtr getInternalPointer(const QModelIndex &index)
    {
-      return static_cast<Node*>(index.internalPointer())->GetPtr();
+      return static_cast<BaseNode*>(index.internalPointer())->GetPtr();
    }
 }
 
@@ -19,7 +19,22 @@ TreeModel::TreeModel(QObject *parent)
 
 void TreeModel::LoadData(const QString& fileName)
 {
-   m_rootItem = DataBuilder::CreateXMLTree(fileName);
+   qDebug() << fileName << "  " << fileName.lastIndexOf(".");
+   const auto& fileType = fileName.right(fileName.length() - fileName.indexOf(".") - 1);
+
+   if (fileType == "xml")
+   {
+      m_rootItem = DataBuilder::CreateXMLTree(fileName);
+   }
+   else if (fileType == "json")
+   {
+      m_rootItem = DataBuilder::CreateJSONTree(fileName);
+   }
+   else
+   {
+      qDebug() << "XMMM " << fileType;
+   }
+
    SimpleModelUpdate();
 }
 
