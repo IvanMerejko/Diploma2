@@ -1,5 +1,23 @@
 #include "JsonNode.h"
 #include <QVariant>
+#include <QDebug>
+namespace
+{
+   QString jsonNodeTypeToString(JsonNodeType jsonNodeType)
+   {
+      switch(jsonNodeType)
+      {
+         case JsonNodeType::Undefind:
+            return "Undefind";
+         case JsonNodeType::Object:
+            return "Object";
+         case JsonNodeType::Value:
+            return "Value";
+         case JsonNodeType::Array:
+            return "Array";
+      }
+   }
+}
 
 JsonNode::JsonNode(JsonNodeType jsonNodeType, const NodePtr& parentItem)
    : BaseNode(parentItem)
@@ -9,12 +27,12 @@ JsonNode::JsonNode(JsonNodeType jsonNodeType, const NodePtr& parentItem)
 
 int JsonNode::GetColumnCount() const noexcept
 {
-    return 1;
+    return 2;
 }
 
 QVariant JsonNode::GetData(int) const
 {
-    return m_name;
+    return m_name + (m_jsonNodeType == JsonNodeType::Array ? " (Array) " : "");
 }
 
 int JsonNode::GetRow()

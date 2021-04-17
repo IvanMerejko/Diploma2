@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>MainWindow.qml</file>
         <file>NodeInfoWindow.qml</file>
+        <file>SearchWindow.qml</file>
+        <file>FilterInfoWindow.qml</file>
+        <file>Utils.js</file>
     </qresource>
 </RCC>

@@ -18,12 +18,27 @@ Window
        return (str.slice(str.lastIndexOf(":")-1))
    }
 
+   Loader
+   {
+       id: searchWindowLoader
+   }
+
+   NewControls.Action
+   {
+       shortcut: "Ctrl+F"
+       onTriggered: searchWindowLoader.source = "SearchWindow.qml"
+   }
+
    FileDialog
    {
        id: fileDialog
        objectName: "fileDialog"
        title: "Please choose a file"
-       onAccepted: treeModel.LoadData(basename(fileDialog.fileUrl.toString()))
+       onAccepted:
+       {
+           treeModel.LoadData(basename(fileDialog.fileUrl.toString()))
+           treeColumn.title = treeModel.GetTitle()
+       }
    }
 
    NewControls.Button
@@ -55,16 +70,66 @@ Window
        anchors.top: loadFileButton.bottom
        anchors.topMargin: 5
        model: treeModel
+       style: TreeViewStyle
+       {
+           transientScrollBars: true
+           scrollToClickedPosition: true
+           headerDelegate: Rectangle
+           {
+              height: 15
+              width: xmlTree.implicitWidth
+              border.color: "grey"
+              color: "#ffe082"
+              radius: 3
+              Text
+              {
+                 anchors.fill: parent
+                 horizontalAlignment: Text.AlignHCenter
+                 verticalAlignment: Text.AlignVCenter
+                 font.family: "Times New Roman"
+                 font.pixelSize: 14
+                 text: styleData.value
+              }
+           }
+           itemDelegate: Rectangle
+           {
+              color: "#00000000"
+              Text
+              {
+                 anchors.fill: parent
+                 elide: Text.ElideRight
+                 text: styleData.value ? styleData.value : ""
+                 font.family: "Times New Roman"
+                 font.pixelSize: 14
+                 horizontalAlignment: Text.AlignLeft
+                 verticalAlignment: Text.AlignVCenter
+              }
+           }
+           rowDelegate: Rectangle
+           {
+               width: item.width
+               height: item.height
+               color:
+               {
+                  var isSelectedRow = xmlTree.currentRow === styleData.row;
+                  var isWhiteRow = styleData.row % 2;
+                  isSelectedRow ? "green" : isWhiteRow ? "white" : "#e0e0e0"
+               }
+               Text
+               {
+                  id: textInRow
+               }
+           }
+       }
+
        OldControls.TableViewColumn
        {
-           role: "xml"
-           title: "XML"
+           id: treeColumn
+           width: xmlTree.width / xmlTree.columnCount
+           role: "fileType"
        }
-       onDoubleClicked: mainWindowObject.CreateNodeInfoWindow(currentIndex)
-//       rowDelegate: Rectangle
-//       {
 
-//       }
+       onDoubleClicked: mainWindowObject.CreateNodeInfoWindow(currentIndex)
    }
 
 }

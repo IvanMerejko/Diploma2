@@ -4,6 +4,7 @@
 #include "NodeInfoWindow.h"
 #include "Models/AttributesTableModel.h"
 #include "Models/TreeModel.h"
+#include "Models/FiltersTableModel.h"
 #include "Types.h"
 
 
@@ -15,6 +16,7 @@ public:
 
 public:
    Q_INVOKABLE void CreateNodeInfoWindow(const QModelIndex&);
+   Q_INVOKABLE void Search(const QVariant&);
 private:
    void initializeWindowPtr();
    void initializeElements();
@@ -23,6 +25,7 @@ private:
 
 private:
     TreeModelPtr m_treeModel;
+    FiltersTableModelPtr m_filtersModel;
     QObjectUp m_mainWindow;
     QVector<NodeInfoWindowPtr> m_displayNodeInfos;
 };

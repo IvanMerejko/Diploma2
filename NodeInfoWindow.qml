@@ -7,6 +7,7 @@ Window
     visible: true
     id: nodeInfoWindow
     objectName: "nodeInfoWindow"
+    title: "Node Info"
     width: 400
     height: 500
     Rectangle

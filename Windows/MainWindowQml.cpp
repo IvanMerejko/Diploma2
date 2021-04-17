@@ -6,10 +6,12 @@ namespace
 {
    constexpr auto TreeModelStr = "treeModel";
    constexpr auto MainWindowStr = "mainWindowObject";
+   constexpr auto FiltersTableModeStr = "filtersModel";
 }
 
 MainWindowQml::MainWindowQml(const QString& file)
    : m_treeModel{TreeModelPtr::create()}
+   , m_filtersModel{FiltersTableModelPtr::create()}
 {
    initializeRootContext();
    load(file);
@@ -20,6 +22,18 @@ MainWindowQml::MainWindowQml(const QString& file)
 void MainWindowQml::CreateNodeInfoWindow(const QModelIndex& index)
 {
    m_displayNodeInfos.append(NodeInfoWindowPtr::create(m_treeModel->GetNode(index)));
+}
+
+void MainWindowQml::Search(const QVariant& searchKey)
+{
+   if (searchKey.userType() == QMetaType::Int)
+   {
+      const auto& filter = m_filtersModel->GetFilter(searchKey.toInt());
+   }
+   else if (searchKey.userType() == QMetaType::QString)
+   {
+
+   }
 }
 
 void MainWindowQml::initializeWindowPtr()
@@ -42,6 +56,7 @@ void MainWindowQml::initializeElements()
 void MainWindowQml::initializeRootContext()
 {
    rootContext()->setContextProperty(TreeModelStr, m_treeModel.get());
+   rootContext()->setContextProperty(FiltersTableModeStr, m_filtersModel.get());
    rootContext()->setContextProperty(MainWindowStr, this);
 }
 

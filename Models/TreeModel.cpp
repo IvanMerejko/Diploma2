@@ -1,6 +1,7 @@
 #include "TreeModel.h"
 #include "Data/DataBuilder.h"
 #include <QDebug>
+#include <algorithm>
 #include "Windows/NodeInfoWindow.h"
 
 namespace
@@ -38,6 +39,29 @@ void TreeModel::LoadData(const QString& fileName)
    SimpleModelUpdate();
 }
 
+QString TreeModel::GetTitle() const
+{
+   if (!m_rootItem)
+   {
+      return "";
+   }
+   else
+   {
+      return dynamic_cast<XMLNode*>(m_rootItem.get()) ? "XML" : "JSON";
+   }
+}
+
+void TreeModel::ApplyFilter(const FilterPtr& filter)
+{
+   m_rootItem->ApplyFilter(filter);
+   SimpleModelUpdate();
+}
+
+void TreeModel::ApplyFilter(const QString&)
+{
+
+}
+
 void TreeModel::SimpleModelUpdate()
 {
    beginResetModel();
@@ -51,8 +75,8 @@ const NodePtr TreeModel::GetNode(const QModelIndex& index) const
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
-    return !index.isValid() || role != TreeModelRoles::XML ?
-        QVariant() : getInternalPointer(index)->GetData(index.column());
+   qDebug() << index.column() << " " << role;
+    return !index.isValid() ? QVariant() : getInternalPointer(index)->GetData(role - Qt::UserRole - 1);
 }
 
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
@@ -105,6 +129,6 @@ int TreeModel::columnCount(const QModelIndex &parent) const
 QHash<int, QByteArray> TreeModel::roleNames() const
 {
    QHash<int, QByteArray> roles;
-   roles[static_cast<int>(TreeModelRoles::XML)] = "xml";
+   roles[static_cast<int>(TreeModelRoles::FileType)] = "fileType";
    return roles;
 }

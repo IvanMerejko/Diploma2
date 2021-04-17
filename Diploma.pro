@@ -19,7 +19,10 @@ SOURCES += \
     Data/DataBuilder.cpp \
     Data/JsonNode.cpp \
     Data/XMLNode.cpp \
+    Data/BaseNode.cpp \
+    Filter/Filter.cpp \
     Models/AttributesTableModel.cpp \
+    Models/FiltersTableModel.cpp \
     Models/TreeModel.cpp \
     Windows/MainWindowQml.cpp \
     Windows/FindWindow.cpp \
@@ -32,7 +35,9 @@ HEADERS += \
     Data/DataBuilder.h \
     Data/JsonNode.h \
     Data/XMLNode.h \
+    Filter/Filter.h \
     Models/AttributesTableModel.h \
+    Models/FiltersTableModel.h \
     Models/TreeModel.h \
     Windows/MainWindowQml.h \
     Windows/FindWindow.h \

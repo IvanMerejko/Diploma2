@@ -38,3 +38,5 @@ enum class JsonNodeType
 
 using Attribute = QPair<std::optional<QString>, QString>;
 using Attributes = QVector<Attribute>;
+
+
