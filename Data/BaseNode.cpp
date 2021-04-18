@@ -1,24 +1,7 @@
 #include "BaseNode.h"
 #include "Filter/Filter.h"
-
-
-namespace
-{
-   bool IsMarchFilter(const QString& value, const FilterPtr& filter)
-   {
-      switch (filter->GetSearchAction())
-      {
-         case Filter::SearchAction::Equal:
-            return value == filter->GetValue();
-         case Filter::SearchAction::NotEqual:
-            return value != filter->GetValue();
-         case Filter::SearchAction::Contains:
-            return value.contains(filter->GetValue());
-         case Filter::SearchAction::NotContains:
-            return !value.contains(filter->GetValue());
-      }
-   }
-}
+#include <QDebug>
+#include "Utils.h"
 
 BaseNode::BaseNode(const NodePtr parentItem)
    : m_parent{parentItem}
@@ -26,13 +9,25 @@ BaseNode::BaseNode(const NodePtr parentItem)
 
 void BaseNode::ApplyFilter(const FilterPtr& filter)
 {
-   switch (filter->GetSearchType())
+   ResetMatchFilter();
+   if (const auto searchType = filter->GetSearchType();
+       searchType == Filter::SearchType::Name || searchType == Filter::SearchType::Value)
    {
-      case Filter::SearchType::Name:
-         break;
-      case Filter::SearchType::Value:
-         break;
+      m_matchType = searchType;
+      m_isMatchFilter = utils::IsMarchFilter(searchType == Filter::SearchType::Name ? m_name : m_value, filter);
+   }
+   else
+   {
+      for(auto& attribute : m_attributes)
+      {
+         attribute.ApplyFilter(filter);
+         m_isMatchFilter |= attribute.IsMatchFilter();
+      }
+   }
 
+   for (const auto& child : m_childs)
+   {
+      child->ApplyFilter(filter);
    }
 }
 
@@ -77,7 +72,13 @@ bool BaseNode::IsMatchFilter() const noexcept
    return m_isMatchFilter;
 }
 
+Filter::SearchType BaseNode::GetMatchType() const noexcept
+{
+   return m_matchType;
+}
+
 void BaseNode::ResetMatchFilter() noexcept
 {
    m_isMatchFilter = false;
+   m_matchType = Filter::SearchType::Unknown;
 }

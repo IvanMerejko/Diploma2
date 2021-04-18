@@ -10,6 +10,28 @@ namespace
    {
       return static_cast<BaseNode*>(index.internalPointer())->GetPtr();
    }
+
+   bool isNodeMatchFilter(const NodePtr& node, int& currentRowIndex, int neededRowIndex)
+   {
+      bool isMatch = false;
+      if (currentRowIndex == neededRowIndex)
+      {
+         return node->IsMatchFilter();
+      }
+      else
+      {
+         for (const auto& child : node->GetChilds())
+         {
+            ++currentRowIndex;
+            if (isMatch |= isNodeMatchFilter(child, currentRowIndex, neededRowIndex);
+                isMatch)
+            {
+               break;
+            }
+         }
+      }
+      return isMatch;
+   }
 }
 
 TreeModel::TreeModel(QObject *parent)
@@ -20,7 +42,6 @@ TreeModel::TreeModel(QObject *parent)
 
 void TreeModel::LoadData(const QString& fileName)
 {
-   qDebug() << fileName << "  " << fileName.lastIndexOf(".");
    const auto& fileType = fileName.right(fileName.length() - fileName.indexOf(".") - 1);
 
    if (fileType == "xml")
@@ -51,9 +72,17 @@ QString TreeModel::GetTitle() const
    }
 }
 
+bool TreeModel::IsRowMathFilter(int row) const
+{
+   int currentNodeIndex = 0;
+
+   return row != -1 && m_rootItem && m_rootItem->GetChilds().size() == 1 && isNodeMatchFilter(m_rootItem->GetChilds()[0], currentNodeIndex, row);
+}
+
 void TreeModel::ApplyFilter(const FilterPtr& filter)
 {
    m_rootItem->ApplyFilter(filter);
+
    SimpleModelUpdate();
 }
 
@@ -75,7 +104,6 @@ const NodePtr TreeModel::GetNode(const QModelIndex& index) const
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
-   qDebug() << index.column() << " " << role;
     return !index.isValid() ? QVariant() : getInternalPointer(index)->GetData(role - Qt::UserRole - 1);
 }
 

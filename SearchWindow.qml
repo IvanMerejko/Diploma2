@@ -134,6 +134,8 @@ Window
     Loader
     {
         id: filterWindowLoader
+        source: "FilterInfoWindow.qml"
+        active: false
     }
 
     NewControls.Button
@@ -156,7 +158,11 @@ Window
             }
         }
        text: qsTr("Create Filter")
-       onClicked: filterWindowLoader.source = "FilterInfoWindow.qml"
+       onClicked:
+       {
+           filterWindowLoader.active = true
+       }
+
     }
 
     NewControls.Button
@@ -180,6 +186,14 @@ Window
             }
         }
        text: qsTr("Search")
-       onClicked: filtersModel.AddFilter(filterNameField.text, filterValueField.text, searchTypeBox.currentIndex, searchActionBox.currentIndex)
+       onClicked:
+       {
+           if (filtersTable.currentRow != -1)
+           {
+               mainWindowObject.Search(filtersTable.currentRow)
+           }
+       }
+
     }
+   onClosing: searchWindowLoader.active = false
 }

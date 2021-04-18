@@ -7,6 +7,7 @@ class AttributesTableModel : public QAbstractTableModel
    Q_OBJECT
 public:
    AttributesTableModel(const NodePtr& node);
+   Q_INVOKABLE bool IsItemMatchFilter(int row, int column) const;
 
 protected:
    int rowCount(const QModelIndex &parent = QModelIndex()) const override;

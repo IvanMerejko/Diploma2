@@ -136,7 +136,6 @@ Window
         width: 200
         height: 30
         model: [ "Equal", "NotEqual", "Contains", "NotContains" ]
-        onCurrentIndexChanged: console.debug(currentIndex)
     }
 
     NewControls.Button
@@ -162,5 +161,8 @@ Window
        text: qsTr("Create")
        onClicked: filtersModel.AddFilter(filterNameField.text, filterValueField.text, searchTypeBox.currentIndex, searchActionBox.currentIndex)
     }
-
+    onClosing:
+    {
+        filterWindowLoader.active = false
+    }
 }

@@ -9,6 +9,8 @@ class NodeInfoWindow : public QQmlApplicationEngine
    Q_OBJECT
 public:
    NodeInfoWindow(const NodePtr&);
+   Q_INVOKABLE bool IsNameMatchFilter() const;
+   Q_INVOKABLE bool IsValueMatchFilter() const;
 public slots:
    void onNameChanged();
    void onValueChanged();

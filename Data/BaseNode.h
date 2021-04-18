@@ -1,5 +1,6 @@
 #pragma once
 #include "Types.h"
+#include "Attribute.h"
 #include "Filter/Filter.h"
 
 class BaseNode: public QEnableSharedFromThis<BaseNode>
@@ -29,6 +30,7 @@ public:
    const NodePtr GetPtr() noexcept;
    JsonNodeType GetJsonNodeType() const noexcept;
    bool IsMatchFilter() const noexcept;
+   Filter::SearchType GetMatchType() const noexcept;
    void ResetMatchFilter() noexcept;
 protected:
     QString m_name;
@@ -38,4 +40,5 @@ protected:
     Nodes m_childs;
     NodePtr m_parent;
     bool m_isMatchFilter{false};
+    Filter::SearchType m_matchType{Filter::SearchType::Unknown};
 };

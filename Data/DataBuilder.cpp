@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QJsonArray>
+#include "Data/Attribute.h"
 
 namespace
 {
@@ -22,7 +23,7 @@ Nodes parseXMLElement(QXmlStreamReader& xmlStream, NodePtr parent = nullptr)
         Attributes attributes;
         for(const auto& attr : xmlStream.attributes())
         {
-            attributes.push_back(qMakePair(attr.name().toString(), attr.value().toString()));
+            attributes.push_back(Attribute{attr.name().toString(), attr.value().toString()});
         }
         node->SetAttributes(attributes);
         const auto childs = parseXMLElement(xmlStream, node);
@@ -53,7 +54,7 @@ void parseJSONArray(const QJsonArray& array, const NodePtr& parent)
       }
       else if (element.isString() || element.isBool() || element.isDouble())
       {
-         parent->AddAttribute(qMakePair(std::nullopt, element.toString()));
+         parent->AddAttribute(Attribute{"", element.toString()});
       }
 
       if (node)
@@ -65,7 +66,6 @@ void parseJSONArray(const QJsonArray& array, const NodePtr& parent)
 
 void parseJSONObject(const QJsonObject& jsonObject, const NodePtr& parent)
 {
-   qDebug() << "parseJSONObject";
    Nodes nodes;
    for(const auto& key : jsonObject.keys())
    {
@@ -73,18 +73,15 @@ void parseJSONObject(const QJsonObject& jsonObject, const NodePtr& parent)
       const auto& value = jsonObject.value(key);
       if (value.isString() || value.isBool() || value.isDouble())
       {
-         qDebug() << "key = " << key << " value = " << value;
-         parent->AddAttribute(qMakePair(key, value.toString()));
+         parent->AddAttribute(Attribute{key, value.toString()});
       }
       else if(value.isObject())
       {
          node = QSharedPointer<JsonNode>::create( JsonNodeType::Object, parent);
-         qDebug() << "new node name = " << key;
          parseJSONObject(value.toObject(), node);
       }
       else if (value.isArray())
       {
-         qDebug() << "new array = " << key;
          node = QSharedPointer<JsonNode>::create(JsonNodeType::Array, parent);
          parseJSONArray(value.toArray(), node);
       }

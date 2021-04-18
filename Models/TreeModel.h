@@ -17,6 +17,7 @@ public:
 
     Q_INVOKABLE void LoadData(const QString& fileName);
     Q_INVOKABLE QString GetTitle() const;
+    Q_INVOKABLE bool IsRowMathFilter(int row) const;
 
     void ApplyFilter(const FilterPtr&);
     void ApplyFilter(const QString&);

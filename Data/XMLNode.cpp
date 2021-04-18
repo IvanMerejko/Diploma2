@@ -6,12 +6,12 @@ namespace
    QString createRowData(const QString& name, const Attributes& attributes)
    {
       auto temp{name};
-      for (const auto& [attributeName, attributeValue] : attributes)
+      for (const auto& attribute : attributes)
       {
          temp.append(" ")
-             .append(*attributeName)
+             .append(attribute.GetName())
              .append(" = ")
-             .append(attributeValue);
+             .append(attribute.GetValue());
       }
       return temp;
    }
@@ -34,5 +34,5 @@ QVariant XMLNode::GetData(int) const
 
 int XMLNode::GetRow()
 {
-    return m_parent ? m_parent->GetChilds().indexOf(sharedFromThis()) : 1;
+    return m_parent ? m_parent->GetChilds().indexOf(sharedFromThis()) : 0;
 }

@@ -21,12 +21,45 @@ Window
    Loader
    {
        id: searchWindowLoader
+       source: "SearchWindow.qml"
+       active: false
    }
 
    NewControls.Action
    {
        shortcut: "Ctrl+F"
-       onTriggered: searchWindowLoader.source = "SearchWindow.qml"
+       onTriggered: searchWindowLoader.active = true
+   }
+
+   function expandChildrens(index)
+   {
+       if (!index || !index.model)
+       {
+           return
+       }
+
+       if(!xmlTree.isExpanded(index))
+       {
+           xmlTree.expand(index)
+       }
+       for(var i=0; i < treeModel.rowCount(index); i++)
+       {
+           expandChildrens(treeModel.index(i,0, index))
+       }
+   }
+
+   function expandAll()
+   {
+       for(var i=0; i < treeModel.rowCount(); i++)
+       {
+            expandChildrens(treeModel.index(i,0))
+       }
+   }
+
+   NewControls.Action
+   {
+       shortcut: "Ctrl+H"
+       onTriggered: expandAll()
    }
 
    FileDialog
@@ -94,6 +127,7 @@ Window
            itemDelegate: Rectangle
            {
               color: "#00000000"
+
               Text
               {
                  anchors.fill: parent
@@ -113,11 +147,19 @@ Window
                {
                   var isSelectedRow = xmlTree.currentRow === styleData.row;
                   var isWhiteRow = styleData.row % 2;
-                  isSelectedRow ? "green" : isWhiteRow ? "white" : "#e0e0e0"
-               }
-               Text
-               {
-                  id: textInRow
+
+                  if (treeModel && treeModel.IsRowMathFilter(styleData.row))
+                  {
+                      return "green";
+                  }
+                  else if (isSelectedRow)
+                  {
+                      return "lightblue"
+                  }
+                  else
+                  {
+                      return isWhiteRow ? "white" : "#e0e0e0"
+                  }
                }
            }
        }

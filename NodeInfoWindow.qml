@@ -38,6 +38,7 @@ Window
         width: nodeInfoWindow.width - nameTextRectangle.width - 20
         anchors.left: nameTextRectangle.right
         anchors.leftMargin: 4
+        textColor: nodeInfoWindowObject.IsNameMatchFilter() ? "green" : "black"
     }
 
     Rectangle
@@ -70,6 +71,7 @@ Window
         anchors.left: valueTextRectangle.right
         anchors.top: nameField.bottom
         anchors.leftMargin: 4
+        textColor: nodeInfoWindowObject.IsValueMatchFilter() ? "green" : "black"
     }
 
     Rectangle
@@ -120,6 +122,7 @@ Window
             itemDelegate: Rectangle
             {
                border.width: 0.5
+               color: attributtesModel && attributtesModel.IsItemMatchFilter(styleData.row, styleData.column) ? "green" : "#00000000"
                Text
                {
                   anchors.fill: parent

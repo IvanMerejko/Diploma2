@@ -1,10 +1,11 @@
 #include "NodeInfoWindow.h"
 #include <QQmlContext>
+#include "Filter/Filter.h"
 #include "Data/XMLNode.h"
 namespace
 {
    constexpr auto AttributesModeStr = "attributtesModel";
-   constexpr auto NodeInfoWindowStr = "nodeInfoWindow";
+   constexpr auto NodeInfoWindowStr = "nodeInfoWindowObject";
    constexpr auto NameFieldStr = "nameField";
    constexpr auto ValueFieldStr = "valueField";
 }
@@ -18,6 +19,16 @@ NodeInfoWindow::NodeInfoWindow(const NodePtr& node)
    initializeWindowPtr();
    initializeElements();
    createConnectionWithQmlObjects();
+}
+
+bool NodeInfoWindow::IsNameMatchFilter() const
+{
+   return m_node->IsMatchFilter() && m_node->GetMatchType() == Filter::SearchType::Name;
+}
+
+bool NodeInfoWindow::IsValueMatchFilter() const
+{
+   return m_node->IsMatchFilter() && m_node->GetMatchType() == Filter::SearchType::Value;
 }
 
 void NodeInfoWindow::onNameChanged()

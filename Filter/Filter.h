@@ -8,7 +8,8 @@ public:
       Name = 0,
       Value,
       AttributeName,
-      AttributeValue
+      AttributeValue,
+      Unknown
    };
 
    enum class SearchAction

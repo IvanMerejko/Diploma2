@@ -28,7 +28,8 @@ void MainWindowQml::Search(const QVariant& searchKey)
 {
    if (searchKey.userType() == QMetaType::Int)
    {
-      const auto& filter = m_filtersModel->GetFilter(searchKey.toInt());
+      qDebug() << "Search";
+      m_treeModel->ApplyFilter(m_filtersModel->GetFilter(searchKey.toInt()));
    }
    else if (searchKey.userType() == QMetaType::QString)
    {
