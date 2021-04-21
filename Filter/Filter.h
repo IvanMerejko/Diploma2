@@ -9,6 +9,8 @@ public:
       Value,
       AttributeName,
       AttributeValue,
+      BothAttributeTypes,
+      BothNodeTypes,
       Unknown
    };
 

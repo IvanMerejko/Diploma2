@@ -16,7 +16,6 @@ AttributesTableModel::AttributesTableModel(const NodePtr& node)
 
 bool AttributesTableModel::IsItemMatchFilter(int row, int column) const
 {
-
    const auto& attribute = m_node->GetAttributes().at(row);
    qDebug() << row << " " << column << " name " << attribute.GetName() << " value " << attribute.GetValue() << " type " << static_cast<int>(attribute.GetMatchType());
    switch(column)

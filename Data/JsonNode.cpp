@@ -30,7 +30,7 @@ int JsonNode::GetColumnCount() const noexcept
     return 2;
 }
 
-QVariant JsonNode::GetData(int) const
+QVariant JsonNode::GetData() const
 {
     return m_name + (m_jsonNodeType == JsonNodeType::Array ? " (Array) " : "");
 }

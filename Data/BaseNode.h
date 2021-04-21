@@ -3,15 +3,17 @@
 #include "Attribute.h"
 #include "Filter/Filter.h"
 
-class BaseNode: public QEnableSharedFromThis<BaseNode>
+class BaseNode: public QObject, public QEnableSharedFromThis<BaseNode>
 {
+   Q_OBJECT
 public:
     BaseNode(const NodePtr parentItem = nullptr);;
 
    virtual int GetColumnCount() const noexcept  = 0;
-   virtual QVariant GetData(int column) const = 0;
+   virtual QVariant GetData() const = 0;
    virtual int GetRow()  = 0;
    void ApplyFilter(const FilterPtr&);
+   void ApplyFilter(const QString&);
 
    void AppendChild(const NodePtr child);;
    void AddAttribute(const Attribute& attribute);;
@@ -32,6 +34,8 @@ public:
    bool IsMatchFilter() const noexcept;
    Filter::SearchType GetMatchType() const noexcept;
    void ResetMatchFilter() noexcept;
+signals:
+   void onNodeMatchFilter(const NodePtr&);
 protected:
     QString m_name;
     QString m_value;

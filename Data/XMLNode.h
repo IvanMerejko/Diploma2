@@ -6,11 +6,12 @@
 
 class XMLNode : public BaseNode
 {
+   Q_OBJECT
 public:
     XMLNode(const NodePtr& parentItem = nullptr);
 
     int GetColumnCount() const noexcept override;
-    QVariant GetData(int) const override;
+    QVariant GetData() const override;
     int GetRow() override;
 };
 

@@ -27,6 +27,28 @@ void Attribute::ApplyFilter(const FilterPtr& filter)
    }
 }
 
+void Attribute::ApplyFilter(const QString& key)
+{
+   ResetMatchFilter();
+   const auto isNameMatch = m_name.contains(key);
+   const auto isValueMatch = m_value.contains(key);
+   if (isNameMatch && isValueMatch)
+   {
+      m_isMatchFilter = true;
+      m_matchType = Filter::SearchType::BothAttributeTypes;
+   }
+   else if (isNameMatch)
+   {
+      m_isMatchFilter = true;
+      m_matchType = Filter::SearchType::AttributeName;
+   }
+   else if (isValueMatch)
+   {
+      m_isMatchFilter = true;
+      m_matchType = Filter::SearchType::AttributeValue;
+   }
+}
+
 const QString& Attribute::GetName() const noexcept
 {
    return m_name;

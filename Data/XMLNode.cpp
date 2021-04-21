@@ -27,7 +27,7 @@ int XMLNode::GetColumnCount() const noexcept
     return 1;
 }
 
-QVariant XMLNode::GetData(int) const
+QVariant XMLNode::GetData() const
 {
     return createRowData(m_name, m_attributes);
 }

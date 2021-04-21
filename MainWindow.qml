@@ -5,6 +5,7 @@ import QtQuick.Controls 2.15 as NewControls
 import QtQuick.Controls 1.4 as OldControls
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Dialogs 1.0
+import "Utils.js" as Utils
 Window
 {
    visible: true
@@ -31,35 +32,10 @@ Window
        onTriggered: searchWindowLoader.active = true
    }
 
-   function expandChildrens(index)
-   {
-       if (!index || !index.model)
-       {
-           return
-       }
-
-       if(!xmlTree.isExpanded(index))
-       {
-           xmlTree.expand(index)
-       }
-       for(var i=0; i < treeModel.rowCount(index); i++)
-       {
-           expandChildrens(treeModel.index(i,0, index))
-       }
-   }
-
-   function expandAll()
-   {
-       for(var i=0; i < treeModel.rowCount(); i++)
-       {
-            expandChildrens(treeModel.index(i,0))
-       }
-   }
-
    NewControls.Action
    {
        shortcut: "Ctrl+H"
-       onTriggered: expandAll()
+       onTriggered: Utils.expandAll()
    }
 
    FileDialog
@@ -174,4 +150,74 @@ Window
        onDoubleClicked: mainWindowObject.CreateNodeInfoWindow(currentIndex)
    }
 
+
+   OldControls.TableView
+   {
+       id: filterResultTable
+       model: filterResultModel
+       width: window.width
+       height: window.height - xmlTree.height - loadFileButton.height - 10
+       anchors.top: xmlTree.bottom
+       anchors.topMargin: 2
+       style: TableViewStyle
+       {
+           transientScrollBars: true
+           scrollToClickedPosition: true
+           headerDelegate: Rectangle
+           {
+              height: 15
+              width: filterResultText.implicitWidth
+              border.color: "grey"
+              color: "#ffe082"
+              radius: 3
+              Text
+              {
+                 id: filterResultText
+                 anchors.fill: parent
+                 horizontalAlignment: Text.AlignHCenter
+                 verticalAlignment: Text.AlignVCenter
+                 font.family: "Times New Roman"
+                 font.pixelSize: 14
+                 text: styleData.value
+              }
+           }
+           itemDelegate: Rectangle
+           {
+              border.width: 0.5
+              color:  "#00000000"
+              Text
+              {
+                 anchors.fill: parent
+                 elide: Text.ElideRight
+                 text: styleData.value ? styleData.value : ""
+                 font.family: "Times New Roman"
+                 font.pixelSize: 14
+                 horizontalAlignment: Text.AlignHCenter
+                 verticalAlignment: Text.AlignVCenter
+              }
+           }
+           rowDelegate: Rectangle
+           {
+               width: item.width
+               height: item.height
+               color:
+               {
+                  var isSelectedRow = filterResultTable.currentRow === styleData.row;
+                  var isWhiteRow = styleData.row % 2;
+                  isSelectedRow? "green" : isWhiteRow ? "white" : "#e0e0e0"
+               }
+               Text
+               {
+                  id: textInRow
+               }
+           }
+       }
+
+       OldControls.TableViewColumn
+       {
+          width: filterResultTable.width / filterResultTable.columnCount
+          role: "result"
+          title: "result"
+       }
+   }
 }

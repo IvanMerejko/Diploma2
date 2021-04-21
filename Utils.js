@@ -1,24 +1,24 @@
-function expandChildrens(view, model, index)
+function expandChildrens(index)
 {
     if (!index || !index.model)
     {
         return
     }
 
-    if(!view.isExpanded(index))
+    if(!xmlTree.isExpanded(index))
     {
-        view.expand(index)
+        xmlTree.expand(index)
     }
-    for(var i=0; i < model.rowCount(index); i++)
+    for(var i=0; i < treeModel.rowCount(index); i++)
     {
-        expandChildrens(model.index(i,0, index))
+        expandChildrens(treeModel.index(i,0, index))
     }
 }
 
-function expandAll(view, model)
+function expandAll()
 {
-    for(var i=0; i < model.rowCount(); i++)
+    for(var i=0; i < treeModel.rowCount(); i++)
     {
-         expandChildrens(view, model, model.index(i,0))
+         expandChildrens(treeModel.index(i,0))
     }
 }

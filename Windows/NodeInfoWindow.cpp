@@ -23,12 +23,16 @@ NodeInfoWindow::NodeInfoWindow(const NodePtr& node)
 
 bool NodeInfoWindow::IsNameMatchFilter() const
 {
-   return m_node->IsMatchFilter() && m_node->GetMatchType() == Filter::SearchType::Name;
+   return m_node->IsMatchFilter() &&
+         (m_node->GetMatchType() == Filter::SearchType::Name ||
+          m_node->GetMatchType() == Filter::SearchType::BothNodeTypes);
 }
 
 bool NodeInfoWindow::IsValueMatchFilter() const
 {
-   return m_node->IsMatchFilter() && m_node->GetMatchType() == Filter::SearchType::Value;
+   return m_node->IsMatchFilter() &&
+         (m_node->GetMatchType() == Filter::SearchType::Value ||
+         m_node->GetMatchType() == Filter::SearchType::BothNodeTypes);
 }
 
 void NodeInfoWindow::onNameChanged()

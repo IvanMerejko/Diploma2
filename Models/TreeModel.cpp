@@ -42,6 +42,8 @@ TreeModel::TreeModel(QObject *parent)
 
 void TreeModel::LoadData(const QString& fileName)
 {
+   beginResetModel();
+   m_rootItem.reset();
    const auto& fileType = fileName.right(fileName.length() - fileName.indexOf(".") - 1);
 
    if (fileType == "xml")
@@ -56,8 +58,11 @@ void TreeModel::LoadData(const QString& fileName)
    {
       qDebug() << "XMMM " << fileType;
    }
-
-   SimpleModelUpdate();
+   if (m_rootItem)
+   {
+      onNodesReload(m_rootItem);
+   }
+   endResetModel();
 }
 
 QString TreeModel::GetTitle() const
@@ -79,18 +84,6 @@ bool TreeModel::IsRowMathFilter(int row) const
    return row != -1 && m_rootItem && m_rootItem->GetChilds().size() == 1 && isNodeMatchFilter(m_rootItem->GetChilds()[0], currentNodeIndex, row);
 }
 
-void TreeModel::ApplyFilter(const FilterPtr& filter)
-{
-   m_rootItem->ApplyFilter(filter);
-
-   SimpleModelUpdate();
-}
-
-void TreeModel::ApplyFilter(const QString&)
-{
-
-}
-
 void TreeModel::SimpleModelUpdate()
 {
    beginResetModel();
@@ -102,9 +95,9 @@ const NodePtr TreeModel::GetNode(const QModelIndex& index) const
    return getInternalPointer(index);
 }
 
-QVariant TreeModel::data(const QModelIndex &index, int role) const
+QVariant TreeModel::data(const QModelIndex &index, int) const
 {
-    return !index.isValid() ? QVariant() : getInternalPointer(index)->GetData(role - Qt::UserRole - 1);
+    return !index.isValid() ? QVariant() : getInternalPointer(index)->GetData();
 }
 
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const

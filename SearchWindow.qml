@@ -3,6 +3,7 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 1.4
 import QtQuick.Controls 2.15 as NewControls
 import QtQuick.Controls.Styles 1.4
+import "Utils.js" as Utils
 Window
 {
     visible: true
@@ -188,9 +189,16 @@ Window
        text: qsTr("Search")
        onClicked:
        {
-           if (filtersTable.currentRow != -1)
+           console.log(searchField.text)
+           if (searchField.text != "")
+           {
+               mainWindowObject.Search(searchField.text)
+               Utils.expandAll()
+           }
+           else if (filtersTable.currentRow != -1)
            {
                mainWindowObject.Search(filtersTable.currentRow)
+               Utils.expandAll()
            }
        }
 

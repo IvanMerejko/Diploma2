@@ -159,7 +159,10 @@ Window
             }
         }
        text: qsTr("Create")
-       onClicked: filtersModel.AddFilter(filterNameField.text, filterValueField.text, searchTypeBox.currentIndex, searchActionBox.currentIndex)
+       onClicked:
+       {
+           filtersModel.AddFilter(filterNameField.text, filterValueField.text, searchTypeBox.currentIndex, searchActionBox.currentIndex)
+       }
     }
     onClosing:
     {

@@ -22,7 +22,9 @@ SOURCES += \
     Data/XMLNode.cpp \
     Data/BaseNode.cpp \
     Filter/Filter.cpp \
+    Filter/Parser.cpp \
     Models/AttributesTableModel.cpp \
+    Models/FilterResultTable.cpp \
     Models/FiltersTableModel.cpp \
     Models/TreeModel.cpp \
     Utils.cpp \
@@ -39,7 +41,9 @@ HEADERS += \
     Data/JsonNode.h \
     Data/XMLNode.h \
     Filter/Filter.h \
+    Filter/Parser.h \
     Models/AttributesTableModel.h \
+    Models/FilterResultTable.h \
     Models/FiltersTableModel.h \
     Models/TreeModel.h \
     Utils.h \
@@ -48,7 +52,8 @@ HEADERS += \
     Types.h \
     Windows/NodeInfoWindow.h
 
-FORMS +=
+CONFIG += conan_basic_setup
+include(conanbuildinfo.pri)
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

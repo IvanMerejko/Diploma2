@@ -29,6 +29,48 @@ void BaseNode::ApplyFilter(const FilterPtr& filter)
    {
       child->ApplyFilter(filter);
    }
+   if (m_isMatchFilter)
+   {
+      onNodeMatchFilter(GetPtr());
+   }
+}
+
+void BaseNode::ApplyFilter(const QString& key)
+{
+   ResetMatchFilter();
+   const auto isNameMatch = m_name.contains(key);
+   const auto isValueMatch = m_value.contains(key);
+   if (isNameMatch && isValueMatch)
+   {
+      m_isMatchFilter = true;
+      m_matchType = Filter::SearchType::BothNodeTypes;
+   }
+   else if (isNameMatch)
+   {
+      m_isMatchFilter = true;
+      m_matchType = Filter::SearchType::Name;
+   }
+   else if (isValueMatch)
+   {
+      m_isMatchFilter = true;
+      m_matchType = Filter::SearchType::Value;
+   }
+
+   for(auto& attribute : m_attributes)
+   {
+      attribute.ApplyFilter(key);
+      m_isMatchFilter |= attribute.IsMatchFilter();
+   }
+
+   for (const auto& child : m_childs)
+   {
+      child->ApplyFilter(key);
+   }
+
+   if (m_isMatchFilter)
+   {
+      onNodeMatchFilter(GetPtr());
+   }
 }
 
 void BaseNode::AppendChild(const NodePtr child) { m_childs.push_back(child); }

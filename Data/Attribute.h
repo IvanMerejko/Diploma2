@@ -6,6 +6,7 @@ class Attribute
 public:
    Attribute(const QString&, const QString&);
    void ApplyFilter(const FilterPtr&);
+   void ApplyFilter(const QString&);
    const QString& GetName() const noexcept;
    const QString& GetValue() const noexcept;
    bool IsMatchFilter() const noexcept;
