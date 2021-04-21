@@ -23,7 +23,7 @@ Window
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             font.family: "Times New Roman"
-            font.pixelSize: 14
+            font.pixelSize: 12
             text: qsTr("Name")
         }
     }
@@ -33,7 +33,7 @@ Window
         id: nameField
         objectName: "nameField"
         font.family: "Times New Roman"
-        font.pixelSize: 14
+        font.pixelSize: 12
         height: nameTextRectangle.height
         width: nodeInfoWindow.width - nameTextRectangle.width - 20
         anchors.left: nameTextRectangle.right
@@ -54,7 +54,7 @@ Window
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             font.family: "Times New Roman"
-            font.pixelSize: 14
+            font.pixelSize: 12
             text: qsTr("Value")
         }
         border.width: 1
@@ -65,7 +65,7 @@ Window
         id: valueField
         objectName: "valueField"
         font.family: "Times New Roman"
-        font.pixelSize: 14
+        font.pixelSize: 12
         height: valueTextRectangle.height
         width: nodeInfoWindow.width - valueTextRectangle.width - 20
         anchors.left: valueTextRectangle.right

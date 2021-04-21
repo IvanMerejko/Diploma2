@@ -21,6 +21,8 @@ SOURCES += \
     Data/JsonNode.cpp \
     Data/XMLNode.cpp \
     Data/BaseNode.cpp \
+    Filter/BaseFilter.cpp \
+    Filter/CompoundFilter.cpp \
     Filter/Filter.cpp \
     Filter/Parser.cpp \
     Models/AttributesTableModel.cpp \
@@ -40,6 +42,8 @@ HEADERS += \
     Data/DataBuilder.h \
     Data/JsonNode.h \
     Data/XMLNode.h \
+    Filter/BaseFilter.h \
+    Filter/CompoundFilter.h \
     Filter/Filter.h \
     Filter/Parser.h \
     Models/AttributesTableModel.h \

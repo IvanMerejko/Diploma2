@@ -6,13 +6,13 @@ bool IsMarchFilter(const QString& value, const FilterPtr& filter)
 {
    switch (filter->GetSearchAction())
    {
-      case Filter::SearchAction::Equal:
+      case SearchAction::Equal:
          return value == filter->GetValue();
-      case Filter::SearchAction::NotEqual:
+      case SearchAction::NotEqual:
          return value != filter->GetValue();
-      case Filter::SearchAction::Contains:
+      case SearchAction::Contains:
          return value.contains(filter->GetValue());
-      case Filter::SearchAction::NotContains:
+      case SearchAction::NotContains:
          return !value.contains(filter->GetValue());
    }
 }

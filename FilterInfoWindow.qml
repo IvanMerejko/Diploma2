@@ -103,8 +103,7 @@ Window
         anchors.topMargin: 1
         width: 200
         height: 30
-        model: [ "Name", "Value", "AttributeName", "AttributeValue" ]
-        onCurrentIndexChanged: console.debug(currentIndex)
+        model: [ "Name", "Value", "AttributeName", "AttributeValue", "Compound"]
     }
 
     Rectangle

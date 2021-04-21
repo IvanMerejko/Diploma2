@@ -19,13 +19,20 @@ Nodes parseXMLElement(QXmlStreamReader& xmlStream, NodePtr parent = nullptr)
     {
         NodePtr node = QSharedPointer<XMLNode>::create(parent);
         node->SetName(xmlStream.name().toString());
-        node->SetValue(xmlStream.text().toString());
         Attributes attributes;
         for(const auto& attr : xmlStream.attributes())
         {
-            attributes.push_back(Attribute{attr.name().toString(), attr.value().toString()});
+            attributes.push_back(QSharedPointer<Attribute>::create(attr.name().toString(), attr.value().toString()));
         }
         node->SetAttributes(attributes);
+
+        xmlStream.readNext();
+        if (!xmlStream.text().isNull())
+        {
+           qDebug() << xmlStream.text();
+           node->SetValue(xmlStream.text().toString());
+        }
+
         const auto childs = parseXMLElement(xmlStream, node);
         for(const auto& child : childs)
         {
@@ -54,7 +61,7 @@ void parseJSONArray(const QJsonArray& array, const NodePtr& parent)
       }
       else if (element.isString() || element.isBool() || element.isDouble())
       {
-         parent->AddAttribute(Attribute{"", element.toString()});
+         parent->AddAttribute(QSharedPointer<Attribute>::create("", element.toString()));
       }
 
       if (node)
@@ -73,7 +80,7 @@ void parseJSONObject(const QJsonObject& jsonObject, const NodePtr& parent)
       const auto& value = jsonObject.value(key);
       if (value.isString() || value.isBool() || value.isDouble())
       {
-         parent->AddAttribute(Attribute{key, value.toString()});
+         parent->AddAttribute(QSharedPointer<Attribute>::create(key, value.toString()));
       }
       else if(value.isObject())
       {

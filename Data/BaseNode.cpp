@@ -1,39 +1,12 @@
 #include "BaseNode.h"
 #include "Filter/Filter.h"
+#include "Data/Attribute.h"
 #include <QDebug>
 #include "Utils.h"
 
 BaseNode::BaseNode(const NodePtr parentItem)
    : m_parent{parentItem}
 {}
-
-void BaseNode::ApplyFilter(const FilterPtr& filter)
-{
-   ResetMatchFilter();
-   if (const auto searchType = filter->GetSearchType();
-       searchType == Filter::SearchType::Name || searchType == Filter::SearchType::Value)
-   {
-      m_matchType = searchType;
-      m_isMatchFilter = utils::IsMarchFilter(searchType == Filter::SearchType::Name ? m_name : m_value, filter);
-   }
-   else
-   {
-      for(auto& attribute : m_attributes)
-      {
-         attribute.ApplyFilter(filter);
-         m_isMatchFilter |= attribute.IsMatchFilter();
-      }
-   }
-
-   for (const auto& child : m_childs)
-   {
-      child->ApplyFilter(filter);
-   }
-   if (m_isMatchFilter)
-   {
-      onNodeMatchFilter(GetPtr());
-   }
-}
 
 void BaseNode::ApplyFilter(const QString& key)
 {
@@ -43,23 +16,23 @@ void BaseNode::ApplyFilter(const QString& key)
    if (isNameMatch && isValueMatch)
    {
       m_isMatchFilter = true;
-      m_matchType = Filter::SearchType::BothNodeTypes;
+      m_matchType = SearchType::BothNodeTypes;
    }
    else if (isNameMatch)
    {
       m_isMatchFilter = true;
-      m_matchType = Filter::SearchType::Name;
+      m_matchType = SearchType::Name;
    }
    else if (isValueMatch)
    {
       m_isMatchFilter = true;
-      m_matchType = Filter::SearchType::Value;
+      m_matchType = SearchType::Value;
    }
 
    for(auto& attribute : m_attributes)
    {
-      attribute.ApplyFilter(key);
-      m_isMatchFilter |= attribute.IsMatchFilter();
+      attribute->ApplyFilter(key);
+      m_isMatchFilter |= attribute->IsMatchFilter();
    }
 
    for (const auto& child : m_childs)
@@ -75,13 +48,33 @@ void BaseNode::ApplyFilter(const QString& key)
 
 void BaseNode::AppendChild(const NodePtr child) { m_childs.push_back(child); }
 
-void BaseNode::AddAttribute(const Attribute& attribute) { m_attributes.push_back(attribute); }
+void BaseNode::AddAttribute(const AttributePtr& attribute) { m_attributes.push_back(attribute); }
 
 void BaseNode::SetAttributes(const Attributes& attributes) { m_attributes = attributes; }
 
 void BaseNode::SetName(const QString& name) { m_name = name; }
 
-void BaseNode::SetValue(const QString& value) { m_value = value; }
+void BaseNode::SetMathFilter(const FilterPtr& filter)
+{
+   m_isMatchFilter = true;
+   if (const auto searchType = filter->GetSearchType();
+       searchType == SearchType::Name || searchType == SearchType::Value)
+   {
+      m_matchType = filter->GetSearchType();
+   }
+
+   onNodeMatchFilter(GetPtr());
+}
+
+void BaseNode::SetValue(const QString& value)
+{
+   auto tmp = value.simplified();
+   tmp.replace( " ", "" );
+   if (tmp.length() != 0)
+   {
+      m_value = value;
+   }
+}
 
 void BaseNode::SetJsonNodeType(JsonNodeType) {}
 
@@ -94,6 +87,8 @@ Nodes BaseNode::GetChilds() const noexcept { return m_childs; }
 int BaseNode::GetChildCount() const noexcept { return m_childs.count(); }
 
 const Attributes& BaseNode::GetAttributes() const noexcept { return m_attributes; }
+
+Attributes& BaseNode::GetAttributes() noexcept { return m_attributes; }
 
 const QString& BaseNode::GetName() const noexcept { return m_name; }
 
@@ -114,7 +109,7 @@ bool BaseNode::IsMatchFilter() const noexcept
    return m_isMatchFilter;
 }
 
-Filter::SearchType BaseNode::GetMatchType() const noexcept
+SearchType BaseNode::GetMatchType() const noexcept
 {
    return m_matchType;
 }
@@ -122,5 +117,6 @@ Filter::SearchType BaseNode::GetMatchType() const noexcept
 void BaseNode::ResetMatchFilter() noexcept
 {
    m_isMatchFilter = false;
-   m_matchType = Filter::SearchType::Unknown;
+   m_matchType = SearchType::Unknown;
+   onResetMatchFilter(GetPtr());
 }

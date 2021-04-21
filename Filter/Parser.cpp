@@ -4,6 +4,7 @@
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/variant/recursive_wrapper.hpp>
 #include <QDebug>
+#include "CompoundFilter.h"
 namespace
 {
 
@@ -40,34 +41,54 @@ struct unop
 
 struct Builder : boost::static_visitor<void>
 {
-    Builder(QDebug& os) : _os(os) {}
-    QDebug& _os;
-
-    void operator()(const var& v) const { _os << v.data(); }
-
-    void operator()(const binop<op_and>& b) const { print(" & ", b.oper1, b.oper2); }
-    void operator()(const binop<op_or >& b) const { print(" | ", b.oper1, b.oper2); }
-
-    void print(const std::string& op, const expr& l, const expr& r) const
+    Builder(CompoundFilterNodePtr& currentRoot, const Filters& filters)
+       : _currentRoot(currentRoot)
+       , _filters{filters}
     {
-        _os << "(";
-            boost::apply_visitor(*this, l);
-            _os << op.data();
-            boost::apply_visitor(*this, r);
-        _os << ")";
+       _currentRoot = CompoundFilterNodePtr::create();
+    }
+    CompoundFilterNodePtr& _currentRoot;
+    const Filters& _filters;
+
+    void operator()(const var& filterName) const
+    {
+       const auto it = std::find_if(_filters.begin(), _filters.end(),
+          [&](const auto& filter)
+       {
+          return filter->GetName() == filterName.data();
+       });
+       if (it != _filters.end())
+       {
+          _currentRoot->operation = Operation::Value;
+          _currentRoot->m_filter = *it;
+       }
+       else
+       {
+          throw std::invalid_argument("Filter not found");
+       }
+    }
+
+    void operator()(const binop<op_and>& b) const { buildExpression(Operation::And, b.oper1, b.oper2); }
+    void operator()(const binop<op_or >& b) const { buildExpression(Operation::Or, b.oper1, b.oper2); }
+
+    void buildExpression(Operation op, const expr& l, const expr& r) const
+    {
+        boost::apply_visitor(Builder(_currentRoot->m_leftOperand, _filters), l);
+        _currentRoot->operation = op;
+        boost::apply_visitor(Builder(_currentRoot->m_rightOperand, _filters), r);
     }
 
     void operator()(const unop<op_not>& u) const
     {
-        _os << "(";
-            _os << "!";
-            boost::apply_visitor(*this, u.oper1);
-        _os << ")";
+       _currentRoot->operation = Operation::Not;
+       boost::apply_visitor(Builder(_currentRoot->m_leftOperand, _filters), u.oper1);
     }
 };
 
-QDebug& operator<<(QDebug& os, const expr& e)
-{ boost::apply_visitor(Builder(os), e); return os; }
+void createCompoundNode(const expr& e, CompoundFilterNodePtr& root, const Filters& filters)
+{
+   boost::apply_visitor(Builder(root, filters), e);
+}
 
 template <typename It, typename Skipper = qi::space_type>
     struct parser : qi::grammar<It, expr(), Skipper>
@@ -97,42 +118,43 @@ template <typename It, typename Skipper = qi::space_type>
     qi::rule<It, var() , Skipper> var_;
     qi::rule<It, expr(), Skipper> not_, and_, or_, simple, expr_;
 };
-
-   void parseExpression(const QString&)
-   {
-
-   }
 }
 
-void Parser::ParseExpression(const QString&)
+FilterPtr Parser::ParseExpression(const QString& name, std::string expression, const Filters& filters)
 {
-   for (auto& input : std::list<std::string> {
-           // From the OP:
-//           "a && b;"
-           "a && b && (c || (d && a) || b);",
-
-           /// Simpler tests:
-//           "!a;",
-//           "!a && b;",
-//           "! (a && b);"
-           })
+   if (!expression.empty() && expression[expression.length() - 1] != ';')
    {
-       auto f(std::begin(input)), l(std::end(input));
-       parser<decltype(f)> p;
-
-       try
-       {
-           expr result;
-           bool ok = qi::phrase_parse(f,l,p > ';',qi::space,result);
-
-           if (!ok)
-               qDebug() << "invalid input\n";
-           else
-               qDebug() << "result: " << result << "\n";
-
-       } catch (const qi::expectation_failure<decltype(f)>& e)
-       {
-           qDebug() << "expectation_failure at \n";
-       }
+      expression += ";";
    }
+
+   auto f(std::begin(expression)), l(std::end(expression));
+   qDebug() << expression.data();
+   parser<decltype(f)> p;
+   CompoundFilterNodePtr root;
+   try
+   {
+      expr result;
+      auto ok = qi::phrase_parse(f,l,p > ';',qi::space,result);
+      if (ok)
+      {
+         createCompoundNode(result, root, filters);
+      }
+      else
+      {
+         qDebug() << "invalid input\n";
+         return nullptr;
+      }
+   }
+   catch (const qi::expectation_failure<decltype(f)>& e)
+   {
+       qDebug() << "expectation_failure at \n";
+       return nullptr;
+   }
+   catch (const std::exception&)
+   {
+      qDebug() << "exception\n";
+      return nullptr;
+   }
+
+   return QSharedPointer<CompoundFilter>::create(name, expression.data(), SearchType::Compound, root);
 }

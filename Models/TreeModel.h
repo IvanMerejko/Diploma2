@@ -24,8 +24,8 @@ public:
     Q_INVOKABLE QString GetTitle() const;
     Q_INVOKABLE bool IsRowMathFilter(int row) const;
 
-    template <typename FilterT>
-    void ApplyFilter(const FilterT&);
+    void ApplyFilter(const FilterPtr&);
+    void ApplyFilter(const QString&);
 
     void SimpleModelUpdate();
     const NodePtr GetNode(const QModelIndex &index) const;
@@ -43,19 +43,6 @@ private:
 
     NodePtr m_rootItem;
 };
-
-template <typename FilterT>
-void TreeModel::ApplyFilter(const FilterT& key)
-{
-   if (!m_rootItem)
-   {
-      return;
-   }
-   onFilteringStarted();
-   m_rootItem->ApplyFilter(key);
-   onFilteringFinished();
-   SimpleModelUpdate();
-}
 
 using TreeModelPtr = QSharedPointer<TreeModel>;
 

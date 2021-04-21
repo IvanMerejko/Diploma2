@@ -1,24 +1,23 @@
 #pragma once
 #include "Types.h"
-#include "Attribute.h"
-#include "Filter/Filter.h"
 
 class BaseNode: public QObject, public QEnableSharedFromThis<BaseNode>
 {
    Q_OBJECT
 public:
-    BaseNode(const NodePtr parentItem = nullptr);;
+    BaseNode(const NodePtr parentItem = nullptr);
+    virtual ~BaseNode() = default;
 
    virtual int GetColumnCount() const noexcept  = 0;
    virtual QVariant GetData() const = 0;
    virtual int GetRow()  = 0;
-   void ApplyFilter(const FilterPtr&);
    void ApplyFilter(const QString&);
 
    void AppendChild(const NodePtr child);;
-   void AddAttribute(const Attribute& attribute);;
+   void AddAttribute(const AttributePtr& attribute);;
    void SetAttributes(const Attributes& attributes);;
    void SetName(const QString& name);
+   void SetMathFilter(const FilterPtr&);
    void SetValue(const QString& value);
 
    virtual void SetJsonNodeType(JsonNodeType);
@@ -27,15 +26,17 @@ public:
    Nodes GetChilds() const noexcept;
    int GetChildCount() const noexcept;
    const Attributes& GetAttributes() const noexcept;
+   Attributes& GetAttributes() noexcept;
    const QString& GetName() const noexcept;
    const QString& GetValue() const noexcept;
    const NodePtr GetPtr() noexcept;
    JsonNodeType GetJsonNodeType() const noexcept;
    bool IsMatchFilter() const noexcept;
-   Filter::SearchType GetMatchType() const noexcept;
+   SearchType GetMatchType() const noexcept;
    void ResetMatchFilter() noexcept;
 signals:
    void onNodeMatchFilter(const NodePtr&);
+   void onResetMatchFilter(const NodePtr&);
 protected:
     QString m_name;
     QString m_value;
@@ -44,5 +45,7 @@ protected:
     Nodes m_childs;
     NodePtr m_parent;
     bool m_isMatchFilter{false};
-    Filter::SearchType m_matchType{Filter::SearchType::Unknown};
+    SearchType m_matchType{SearchType::Unknown};
 };
+
+

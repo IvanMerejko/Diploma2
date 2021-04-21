@@ -24,15 +24,15 @@ NodeInfoWindow::NodeInfoWindow(const NodePtr& node)
 bool NodeInfoWindow::IsNameMatchFilter() const
 {
    return m_node->IsMatchFilter() &&
-         (m_node->GetMatchType() == Filter::SearchType::Name ||
-          m_node->GetMatchType() == Filter::SearchType::BothNodeTypes);
+         (m_node->GetMatchType() == SearchType::Name ||
+          m_node->GetMatchType() == SearchType::BothNodeTypes);
 }
 
 bool NodeInfoWindow::IsValueMatchFilter() const
 {
    return m_node->IsMatchFilter() &&
-         (m_node->GetMatchType() == Filter::SearchType::Value ||
-         m_node->GetMatchType() == Filter::SearchType::BothNodeTypes);
+         (m_node->GetMatchType() == SearchType::Value ||
+         m_node->GetMatchType() == SearchType::BothNodeTypes);
 }
 
 void NodeInfoWindow::onNameChanged()
@@ -59,8 +59,10 @@ void NodeInfoWindow::initializeElements()
       m_nameField->setProperty("text", m_node->GetName());
    }
    m_valueField = getPointerForElementByName(ValueFieldStr);
+   qDebug() << m_node->GetValue();
    if (m_valueField)
    {
+      qDebug() << "set value";
       m_valueField->setProperty("text", m_node->GetValue());
    }
 }

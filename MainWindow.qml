@@ -103,7 +103,7 @@ Window
            itemDelegate: Rectangle
            {
               color: "#00000000"
-
+              border.width: 0.5
               Text
               {
                  anchors.fill: parent
@@ -121,16 +121,11 @@ Window
                height: item.height
                color:
                {
-                  var isSelectedRow = xmlTree.currentRow === styleData.row;
                   var isWhiteRow = styleData.row % 2;
 
                   if (treeModel && treeModel.IsRowMathFilter(styleData.row))
                   {
                       return "green";
-                  }
-                  else if (isSelectedRow)
-                  {
-                      return "lightblue"
                   }
                   else
                   {

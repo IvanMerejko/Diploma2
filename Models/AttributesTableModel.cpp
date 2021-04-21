@@ -1,5 +1,6 @@
 #include "AttributesTableModel.h"
 #include "Data/XMLNode.h"
+#include "Data/Attribute.h"
 #include "Filter/Filter.h"
 #include <QDebug>
 
@@ -17,16 +18,23 @@ AttributesTableModel::AttributesTableModel(const NodePtr& node)
 bool AttributesTableModel::IsItemMatchFilter(int row, int column) const
 {
    const auto& attribute = m_node->GetAttributes().at(row);
-   qDebug() << row << " " << column << " name " << attribute.GetName() << " value " << attribute.GetValue() << " type " << static_cast<int>(attribute.GetMatchType());
    switch(column)
    {
       case 0:
-         return attribute.GetMatchType() == Filter::SearchType::AttributeName;
+         return attribute->GetMatchType() == SearchType::AttributeName;
       case 1:
-         return attribute.GetMatchType() == Filter::SearchType::AttributeValue;
+         return attribute->GetMatchType() == SearchType::AttributeValue;
       default:
          return false;
    }
+}
+
+void AttributesTableModel::DeleteAttribute(int row)
+{
+   beginResetModel();
+   auto& attributes = m_node->GetAttributes();
+   attributes.erase(std::remove(attributes.begin(), attributes.end(), attributes[row]), attributes.end());
+   endResetModel();
 }
 
 int AttributesTableModel::rowCount(const QModelIndex&) const
@@ -49,9 +57,9 @@ QVariant AttributesTableModel::data(const QModelIndex& index, int role) const
    switch(static_cast<AttributeType>(role))
    {
       case AttributeType::Name:
-         return attribute.GetName();
+         return attribute->GetName();
       case AttributeType::Value:
-         return attribute.GetValue();
+         return attribute->GetValue();
    }
    return QVariant{};
 }

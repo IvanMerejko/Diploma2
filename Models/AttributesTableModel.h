@@ -8,6 +8,7 @@ class AttributesTableModel : public QAbstractTableModel
 public:
    AttributesTableModel(const NodePtr& node);
    Q_INVOKABLE bool IsItemMatchFilter(int row, int column) const;
+   Q_INVOKABLE void DeleteAttribute(int row);
 
 protected:
    int rowCount(const QModelIndex &parent = QModelIndex()) const override;

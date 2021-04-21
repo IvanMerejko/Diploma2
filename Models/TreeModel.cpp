@@ -84,6 +84,30 @@ bool TreeModel::IsRowMathFilter(int row) const
    return row != -1 && m_rootItem && m_rootItem->GetChilds().size() == 1 && isNodeMatchFilter(m_rootItem->GetChilds()[0], currentNodeIndex, row);
 }
 
+void TreeModel::ApplyFilter(const FilterPtr& filter)
+{
+   if (!m_rootItem)
+   {
+      return;
+   }
+   onFilteringStarted();
+   filter->ApplyFilter(m_rootItem);
+   onFilteringFinished();
+   SimpleModelUpdate();
+}
+
+void TreeModel::ApplyFilter(const QString& key)
+{
+   if (!m_rootItem)
+   {
+      return;
+   }
+   onFilteringStarted();
+   m_rootItem->ApplyFilter(key);
+   onFilteringFinished();
+   SimpleModelUpdate();
+}
+
 void TreeModel::SimpleModelUpdate()
 {
    beginResetModel();

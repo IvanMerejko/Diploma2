@@ -1,9 +1,20 @@
 #include "FiltersTableModel.h"
-#include <Filter/Filter.h>
+#include "Filter/Parser.h"
+#include "Filter/Filter.h"
+#include "Filter/CompoundFilter.h"
+#include <QFile>
+#include <QDebug>
+#include <QTextStream>
+
 FiltersTableModel::FiltersTableModel()
    : m_filters{}
 {
+   readFromFile();
+}
 
+FiltersTableModel::~FiltersTableModel()
+{
+   saveToFile();
 }
 
 void FiltersTableModel::AddFilter(const QString& name, const QString& value, int searchType, int searchAction)
@@ -12,9 +23,28 @@ void FiltersTableModel::AddFilter(const QString& name, const QString& value, int
        it == m_filters.end())
    {
       beginResetModel();
-      m_filters.append(FilterPtr::create(name, value, searchType, searchAction));
+      if (const auto searchTypeEnum = static_cast<SearchType>(searchType);
+          searchTypeEnum == SearchType::Compound)
+      {
+         if (const auto filter = Parser::ParseExpression(name, value.toStdString(),  m_filters))
+         {
+            qDebug() << "create";
+            m_filters.append(filter);
+         }
+      }
+      else
+      {
+         m_filters.append(QSharedPointer<Filter>::create(name, value, static_cast<SearchType>(searchType), static_cast<SearchAction>(searchAction)));
+      }
       endResetModel();
    }
+}
+
+void FiltersTableModel::DeleteFilter(int row)
+{
+   beginResetModel();
+   m_filters.erase(std::remove(m_filters.begin(), m_filters.end(), m_filters[row]), m_filters.end());
+   endResetModel();
 }
 
 const FilterPtr& FiltersTableModel::GetFilter(int row) const
@@ -73,4 +103,42 @@ bool FiltersTableModel::removeRows(int, int, const QModelIndex&)
 bool FiltersTableModel::setData(const QModelIndex&, const QVariant&, int)
 {
    return true;
+}
+
+void FiltersTableModel::saveToFile()
+{
+   QFile outfile("Filters.txt");
+   outfile.open(QIODevice::WriteOnly | QIODevice::Text);
+   QTextStream writeStream(&outfile);
+   for (const auto& filter : m_filters)
+   {
+      writeStream << filter->GetName() << "\\_/"
+              << filter->GetValue() << "\\_/"
+              << static_cast<int>(filter->GetSearchType()) << "\\_/"
+              << static_cast<int>(filter->GetSearchAction()) << '\n';
+   }
+   outfile.close();
+}
+
+void FiltersTableModel::readFromFile()
+{
+   QFile infile("Filters.txt");
+   infile.open(QIODevice::ReadOnly);
+   QTextStream in(&infile);
+   while (!in.atEnd())
+   {
+      QString line = in.readLine();
+      auto pieces = line.split(  "\\_/" );
+      const auto searchType = static_cast<SearchType>(pieces[2].toInt());
+      if (searchType == SearchType::Compound)
+      {
+         m_filters.append(Parser::ParseExpression(pieces[0], pieces[1].toStdString(),  m_filters));
+      }
+      else
+      {
+         m_filters.append(QSharedPointer<Filter>::create(pieces[0],
+            pieces[1], searchType, static_cast<SearchAction>(pieces[3].toInt())));
+      }
+   }
+   infile.close();
 }

@@ -9,6 +9,7 @@ public:
    FilterResultTableModel() = default;
 public slots:
    void addNode(const NodePtr&);
+   void removeNode(const NodePtr&);
    void filteringStarted();
    void filteringFinished();
    void connectWithNodes(const NodePtr&);

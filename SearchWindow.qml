@@ -12,6 +12,20 @@ Window
     title: "Search"
     width: 800
     height: 600
+
+    NewControls.Action
+    {
+        shortcut: "Delete"
+        onTriggered:
+        {
+            if (filtersTable.currentRow != -1)
+            {
+                filtersModel.DeleteFilter(filtersTable.currentRow )
+            }
+
+        }
+    }
+
     TextField
     {
         id: searchField

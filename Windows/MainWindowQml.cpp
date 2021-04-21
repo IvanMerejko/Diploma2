@@ -21,7 +21,6 @@ MainWindowQml::MainWindowQml(const QString& file)
    initializeWindowPtr();
    initializeElements();
    createConnections();
-   Parser::ParseExpression("");
 }
 
 void MainWindowQml::CreateNodeInfoWindow(const QModelIndex& index)

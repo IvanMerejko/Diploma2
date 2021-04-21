@@ -22,6 +22,32 @@ QObjectUp makeQObjectUP(Args&&... value)
 
 using NodePtr = QSharedPointer<class BaseNode>;
 using Nodes = QVector<NodePtr>;
+using AttributePtr = QSharedPointer<class Attribute>;
+using Attributes = QVector<AttributePtr>;
+using FilterPtr = QSharedPointer<class BaseFilter>;
+using Filters =  QVector<FilterPtr>;
+using CompoundFilterNodePtr = QSharedPointer<struct CompoundFilterNode>;
+
+enum class SearchType
+{
+   Name = 0,
+   Value,
+   AttributeName,
+   AttributeValue,
+   Compound,
+   BothAttributeTypes,
+   BothNodeTypes,
+   Unknown
+};
+
+enum class SearchAction
+{
+   Equal = 0,
+   NotEqual,
+   Contains,
+   NotContains,
+   Unknown
+};
 
 enum class AttributeType
 {
@@ -35,5 +61,4 @@ enum class JsonNodeType
    Object,
    Array
 };
-
 

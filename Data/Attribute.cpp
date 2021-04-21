@@ -6,25 +6,9 @@ Attribute::Attribute(const QString& name, const QString& value)
    : m_name{name}
    , m_value{value}
    , m_isMatchFilter{false}
-   , m_matchType{Filter::SearchType::Unknown}
+   , m_matchType{SearchType::Unknown}
 {
 
-}
-
-void Attribute::ApplyFilter(const FilterPtr& filter)
-{
-   ResetMatchFilter();
-   const auto searchType = filter->GetSearchType();
-   if (searchType == Filter::SearchType::Name || searchType == Filter::SearchType::Value)
-   {
-      return;
-   }
-
-   m_isMatchFilter = utils::IsMarchFilter(searchType == Filter::SearchType::AttributeName ? m_name : m_value, filter);
-   if (m_isMatchFilter)
-   {
-      m_matchType = searchType;
-   }
 }
 
 void Attribute::ApplyFilter(const QString& key)
@@ -35,17 +19,27 @@ void Attribute::ApplyFilter(const QString& key)
    if (isNameMatch && isValueMatch)
    {
       m_isMatchFilter = true;
-      m_matchType = Filter::SearchType::BothAttributeTypes;
+      m_matchType = SearchType::BothAttributeTypes;
    }
    else if (isNameMatch)
    {
       m_isMatchFilter = true;
-      m_matchType = Filter::SearchType::AttributeName;
+      m_matchType = SearchType::AttributeName;
    }
    else if (isValueMatch)
    {
       m_isMatchFilter = true;
-      m_matchType = Filter::SearchType::AttributeValue;
+      m_matchType = SearchType::AttributeValue;
+   }
+}
+
+void Attribute::SetMathFilter(const FilterPtr& filter)
+{
+   m_isMatchFilter = true;
+   if (const auto searchType = filter->GetSearchType();
+       searchType == SearchType::Name || searchType == SearchType::Value)
+   {
+      m_matchType = filter->GetSearchType();
    }
 }
 
@@ -64,7 +58,7 @@ bool Attribute::IsMatchFilter() const noexcept
    return m_isMatchFilter;
 }
 
-Filter::SearchType Attribute::GetMatchType() const noexcept
+SearchType Attribute::GetMatchType() const noexcept
 {
    return m_matchType;
 }
@@ -72,5 +66,5 @@ Filter::SearchType Attribute::GetMatchType() const noexcept
 void Attribute::ResetMatchFilter() noexcept
 {
    m_isMatchFilter = false;
-   m_matchType = Filter::SearchType::Unknown;
+   m_matchType = SearchType::Unknown;
 }

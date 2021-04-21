@@ -15,6 +15,11 @@ void FilterResultTableModel::addNode(const NodePtr& node)
    m_nodes.push_back(node);
 }
 
+void FilterResultTableModel::removeNode(const NodePtr& node)
+{
+   m_nodes.removeOne(node);
+}
+
 void FilterResultTableModel::filteringStarted()
 {
    m_nodes.clear();
@@ -31,6 +36,7 @@ void FilterResultTableModel::connectWithNodes(const NodePtr& node)
    if (node)
    {
       connect(node.get(), &BaseNode::onNodeMatchFilter, this, &FilterResultTableModel::addNode);
+      connect(node.get(), &BaseNode::onResetMatchFilter, this, &FilterResultTableModel::removeNode);
       for(const auto& child : node->GetChilds())
       {
          connectWithNodes(child);
