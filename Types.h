@@ -27,6 +27,10 @@ using Attributes = QVector<AttributePtr>;
 using FilterPtr = QSharedPointer<class BaseFilter>;
 using Filters =  QVector<FilterPtr>;
 using CompoundFilterNodePtr = QSharedPointer<struct CompoundFilterNode>;
+using ActionPtr = QSharedPointer<class Action>;
+using Actions = QVector<ActionPtr>;
+using RulePtr = QSharedPointer<class Rule>;
+using Rules = QVector<RulePtr>;
 
 enum class SearchType
 {
@@ -60,5 +64,16 @@ enum class JsonNodeType
    Value,
    Object,
    Array
+};
+
+enum class ActionType
+{
+   DeleteNode,
+   DeleteAttribute,
+   ModifyAttributeName,
+   ModifyAttributeValue,
+   ModifyNodeName,
+   ModifyNodeValue,
+   AddAttribute
 };
 

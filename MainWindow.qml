@@ -26,10 +26,23 @@ Window
        active: false
    }
 
+   Loader
+   {
+       id: rulesWindowLoader
+       source: "RulesWindow.qml"
+       active: false
+   }
+
    NewControls.Action
    {
        shortcut: "Ctrl+F"
        onTriggered: searchWindowLoader.active = true
+   }
+
+   NewControls.Action
+   {
+       shortcut: "Ctrl+R"
+       onTriggered: rulesWindowLoader.active = true
    }
 
    NewControls.Action

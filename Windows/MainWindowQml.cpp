@@ -9,12 +9,16 @@ namespace
    constexpr auto MainWindowStr = "mainWindowObject";
    constexpr auto FiltersTableModelStr = "filtersModel";
    constexpr auto FilterResultTableModelStr = "filterResultModel";
+   constexpr auto ActionsTableModelStr = "actionsTableModel";
+   constexpr auto RulesTableModelStr = "rulesTableModel";
 }
 
 MainWindowQml::MainWindowQml(const QString& file)
    : m_treeModel{TreeModelPtr::create()}
    , m_filtersModel{FiltersTableModelPtr::create()}
    , m_filterResultModel{FilterResultTableModelPtr::create()}
+   , m_actionsTableModel{ActionsTableModelPtr::create()}
+   , m_rulesTableModel{RulesTableModelPtr::create(m_actionsTableModel, m_filtersModel)}
 {
    initializeRootContext();
    load(file);
@@ -62,6 +66,8 @@ void MainWindowQml::initializeRootContext()
    rootContext()->setContextProperty(TreeModelStr, m_treeModel.get());
    rootContext()->setContextProperty(FiltersTableModelStr, m_filtersModel.get());
    rootContext()->setContextProperty(FilterResultTableModelStr, m_filterResultModel.get());
+   rootContext()->setContextProperty(ActionsTableModelStr, m_actionsTableModel.get());
+   rootContext()->setContextProperty(RulesTableModelStr, m_rulesTableModel.get());
    rootContext()->setContextProperty(MainWindowStr, this);
 }
 

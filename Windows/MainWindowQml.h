@@ -6,6 +6,8 @@
 #include "Models/TreeModel.h"
 #include "Models/FilterResultTable.h"
 #include "Models/FiltersTableModel.h"
+#include "Models/ActionsTableModel.h"
+#include "Models/RulesTableModel.h"
 #include "Types.h"
 
 
@@ -29,6 +31,8 @@ private:
     TreeModelPtr m_treeModel;
     FiltersTableModelPtr m_filtersModel;
     FilterResultTableModelPtr m_filterResultModel;
+    ActionsTableModelPtr m_actionsTableModel;
+    RulesTableModelPtr m_rulesTableModel;
     QObjectUp m_mainWindow;
     QVector<NodeInfoWindowPtr> m_displayNodeInfos;
 };

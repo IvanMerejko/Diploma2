@@ -71,13 +71,3 @@ QHash<int, QByteArray> AttributesTableModel::roleNames() const
    roles[static_cast<int>(AttributeType::Value)] = AttributeValueStr;
    return roles;
 }
-
-bool AttributesTableModel::removeRows(int, int, const QModelIndex&)
-{
-   return true;
-}
-
-bool AttributesTableModel::setData(const QModelIndex&, const QVariant&, int)
-{
-   return true;
-}

@@ -18,18 +18,18 @@ public:
    Q_INVOKABLE void AddFilter(const QString& name, const QString& value, int searchType, int searchAction);
    Q_INVOKABLE void DeleteFilter(int row);
    const FilterPtr& GetFilter(int) const;
+   const FilterPtr GetFilterByName(const QString& name) const;
 
 protected:
    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
    QHash<int , QByteArray> roleNames() const override;
-   bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
-   bool setData(const QModelIndex& index , const QVariant& value , int role) override;
 
 private:
    void saveToFile();
    void readFromFile();
+   const FilterPtr findFilter(const QString& filterName) const noexcept;
 
 private:
    Filters m_filters;

@@ -19,8 +19,7 @@ FiltersTableModel::~FiltersTableModel()
 
 void FiltersTableModel::AddFilter(const QString& name, const QString& value, int searchType, int searchAction)
 {
-   if (const auto it = std::find_if(m_filters.begin(), m_filters.end(), [name](const auto& filter) { return filter->GetName() == name; });
-       it == m_filters.end())
+   if (!findFilter(name))
    {
       beginResetModel();
       if (const auto searchTypeEnum = static_cast<SearchType>(searchType);
@@ -28,7 +27,6 @@ void FiltersTableModel::AddFilter(const QString& name, const QString& value, int
       {
          if (const auto filter = Parser::ParseExpression(name, value.toStdString(),  m_filters))
          {
-            qDebug() << "create";
             m_filters.append(filter);
          }
       }
@@ -52,6 +50,11 @@ const FilterPtr& FiltersTableModel::GetFilter(int row) const
    return m_filters.at(row);
 }
 
+const FilterPtr FiltersTableModel::GetFilterByName(const QString& name) const
+{
+   return findFilter(name);
+}
+
 int FiltersTableModel::rowCount(const QModelIndex&) const
 {
    return m_filters.size();
@@ -68,7 +71,6 @@ QVariant FiltersTableModel::data(const QModelIndex& index, int role) const
    {
       return QVariant();
    }
-
 
    const auto& filter = m_filters.at(index.row());
    switch(static_cast<FiltersRole>(role))
@@ -93,16 +95,6 @@ QHash<int, QByteArray> FiltersTableModel::roleNames() const
    roles[static_cast<int>(FiltersRole::SearchAction)] = "searchAction";
    roles[static_cast<int>(FiltersRole::Value)] = "value";
    return roles;
-}
-
-bool FiltersTableModel::removeRows(int, int, const QModelIndex&)
-{
-   return true;
-}
-
-bool FiltersTableModel::setData(const QModelIndex&, const QVariant&, int)
-{
-   return true;
 }
 
 void FiltersTableModel::saveToFile()
@@ -141,4 +133,10 @@ void FiltersTableModel::readFromFile()
       }
    }
    infile.close();
+}
+
+const FilterPtr FiltersTableModel::findFilter(const QString& filterName) const noexcept
+{
+   const auto it = std::find_if(m_filters.begin(), m_filters.end(), [filterName](const auto& filter) { return filter->GetName() == filterName; });
+   return it == m_filters.end() ? nullptr : *it;
 }
