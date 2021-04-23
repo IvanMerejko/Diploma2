@@ -1,7 +1,7 @@
 #pragma once
 #include <QAbstractItemModel>
 #include <QModelIndex>
-#include "Filter/Filter.h"
+#include "Executors/Filter.h"
 #include "Data/BaseNode.h"
 #include "Types.h"
 
@@ -26,6 +26,7 @@ public:
 
     void ApplyFilter(const FilterPtr&);
     void ApplyFilter(const QString&);
+    void ApplyRule(const RulePtr&);
 
     void SimpleModelUpdate();
     const NodePtr GetNode(const QModelIndex &index) const;

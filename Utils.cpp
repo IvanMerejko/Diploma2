@@ -1,5 +1,5 @@
 #include "Utils.h"
-
+#include "Executors/Filter.h"
 namespace utils
 {
 bool IsMarchFilter(const QString& value, const FilterPtr& filter)
@@ -14,6 +14,8 @@ bool IsMarchFilter(const QString& value, const FilterPtr& filter)
          return value.contains(filter->GetValue());
       case SearchAction::NotContains:
          return !value.contains(filter->GetValue());
+      case SearchAction::Unknown:
+         return false;
    }
 }
 }

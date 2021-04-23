@@ -127,6 +127,13 @@ Window
            title: "Filter name"
         }
     }
+
+    Loader
+    {
+        id: ruleWindowLoader
+        source: "RuleInfoWindow.qml"
+        active: false
+    }
     NewControls.Button
     {
         id: createRuleButton
@@ -149,7 +156,37 @@ Window
        text: qsTr("Create Rule")
        onClicked:
        {
-           actionWindowLoader.active = true
+           ruleWindowLoader.active = true
+       }
+    }
+
+    NewControls.Button
+    {
+        id: applyRuleButton
+        anchors.topMargin: 2
+        anchors.top: rulesTable.bottom
+        anchors.left: createRuleButton.right
+        anchors.leftMargin: 2
+        width: 130
+        height: 40
+        background: Rectangle
+        {
+            border.width: applyRuleButton.activeFocus ? 2 : 1
+            border.color: "#888"
+            radius: 4
+            gradient: Gradient
+            {
+                GradientStop { position: 0 ; color: applyRuleButton.pressed ? "#ccc" : "#eee" }
+                GradientStop { position: 1 ; color: applyRuleButton.pressed ? "#aaa" : "#ccc" }
+            }
+        }
+       text: qsTr("Apply Rule")
+       onClicked:
+       {
+           if (rulesTable.currentRow != -1)
+           {
+               mainWindowObject.ApplyRule(rulesTable.currentRow)
+           }
        }
     }
 

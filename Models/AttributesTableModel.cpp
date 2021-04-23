@@ -1,7 +1,7 @@
 #include "AttributesTableModel.h"
 #include "Data/XMLNode.h"
 #include "Data/Attribute.h"
-#include "Filter/Filter.h"
+#include "Executors/Filter.h"
 #include <QDebug>
 
 namespace

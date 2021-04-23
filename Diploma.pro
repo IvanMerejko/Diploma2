@@ -16,19 +16,23 @@ QT += quick
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Executors/Action.cpp \
     Data/Attribute.cpp \
     Data/DataBuilder.cpp \
     Data/JsonNode.cpp \
     Data/XMLNode.cpp \
     Data/BaseNode.cpp \
-    Filter/BaseFilter.cpp \
-    Filter/CompoundFilter.cpp \
-    Filter/Filter.cpp \
-    Filter/Parser.cpp \
+    Executors/BaseFilter.cpp \
+    Executors/CompoundFilter.cpp \
+    Executors/Filter.cpp \
+    Executors/Parser.cpp \
+    Models/ActionsTableModel.cpp \
     Models/AttributesTableModel.cpp \
     Models/FilterResultTable.cpp \
     Models/FiltersTableModel.cpp \
+    Models/RulesTableModel.cpp \
     Models/TreeModel.cpp \
+    Executors/Rule.cpp \
     Utils.cpp \
     Windows/MainWindowQml.cpp \
     Windows/FindWindow.cpp \
@@ -37,19 +41,23 @@ SOURCES += \
 
 
 HEADERS += \
+    Executors/Action.h \
     Data/Attribute.h \
     Data/BaseNode.h \
     Data/DataBuilder.h \
     Data/JsonNode.h \
     Data/XMLNode.h \
-    Filter/BaseFilter.h \
-    Filter/CompoundFilter.h \
-    Filter/Filter.h \
-    Filter/Parser.h \
+    Executors/BaseFilter.h \
+    Executors/CompoundFilter.h \
+    Executors/Filter.h \
+    Executors/Parser.h \
+    Models/ActionsTableModel.h \
     Models/AttributesTableModel.h \
     Models/FilterResultTable.h \
     Models/FiltersTableModel.h \
+    Models/RulesTableModel.h \
     Models/TreeModel.h \
+    Executors/Rule.h \
     Utils.h \
     Windows/MainWindowQml.h \
     Windows/FindWindow.h \

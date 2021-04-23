@@ -1,5 +1,5 @@
 #pragma once
-#include <Filter/Filter.h>
+#include <Executors/Filter.h>
 #include <QAbstractTableModel>
 class FiltersTableModel : public QAbstractTableModel
 {

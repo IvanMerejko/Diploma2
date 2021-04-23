@@ -1,8 +1,9 @@
 #include "RulesTableModel.h"
-#include "Rule/Rule.h"
-#include "Rule/Action.h"
-#include "Filter/Filter.h"
+#include "Executors/Rule.h"
+#include "Executors/Action.h"
+#include "Executors/Filter.h"
 #include <QFile>
+#include <QDebug>
 #include <QTextStream>
 
 RulesTableModel::RulesTableModel(const ActionsTableModelPtr& actions, const FiltersTableModelPtr& filters)
@@ -23,7 +24,9 @@ void RulesTableModel::AddRule(const QString& ruleName, const QString& filterName
    const auto& action = m_actions->GetActionByName(actionName);
    if (filter && action)
    {
+      beginResetModel();
       m_rules.push_back(RulePtr::create(ruleName, filter, action));
+      endResetModel();
    }
 }
 
@@ -32,6 +35,11 @@ void RulesTableModel::DeleteRule(int row)
    beginResetModel();
    m_rules.erase(std::remove(m_rules.begin(), m_rules.end(), m_rules[row]), m_rules.end());
    endResetModel();
+}
+
+const RulePtr& RulesTableModel::GetRule(int row) const noexcept
+{
+   return m_rules.at(row);
 }
 
 int RulesTableModel::rowCount(const QModelIndex&) const

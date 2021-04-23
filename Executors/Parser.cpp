@@ -128,7 +128,6 @@ FilterPtr Parser::ParseExpression(const QString& name, std::string expression, c
    }
 
    auto f(std::begin(expression)), l(std::end(expression));
-   qDebug() << expression.data();
    parser<decltype(f)> p;
    CompoundFilterNodePtr root;
    try

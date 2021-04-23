@@ -4,7 +4,7 @@ class Rule
 {
 public:
    Rule(const QString&, const FilterPtr&, const ActionPtr&);
-
+   void ApplyRule(const NodePtr&);
    const QString& GetName() const noexcept;
    const FilterPtr& GetFilter() const noexcept;
    const ActionPtr& GetAction() const noexcept;

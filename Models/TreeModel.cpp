@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <algorithm>
 #include "Windows/NodeInfoWindow.h"
+#include "Executors/Rule.h"
+#include "Executors/BaseFilter.h"
 
 namespace
 {
@@ -104,6 +106,18 @@ void TreeModel::ApplyFilter(const QString& key)
    }
    onFilteringStarted();
    m_rootItem->ApplyFilter(key);
+   onFilteringFinished();
+   SimpleModelUpdate();
+}
+
+void TreeModel::ApplyRule(const RulePtr& rule)
+{
+   if (!m_rootItem)
+   {
+      return;
+   }
+   onFilteringStarted();
+   rule->ApplyRule(m_rootItem);
    onFilteringFinished();
    SimpleModelUpdate();
 }

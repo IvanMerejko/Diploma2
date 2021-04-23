@@ -17,6 +17,7 @@ public:
    ~RulesTableModel();
    Q_INVOKABLE void AddRule(const QString& ruleName, const QString& filterName, const QString& actionName);
    Q_INVOKABLE void DeleteRule(int row);
+   const RulePtr& GetRule(int) const noexcept;
 
 protected:
    int rowCount(const QModelIndex &parent = QModelIndex()) const override;

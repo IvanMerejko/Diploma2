@@ -1,6 +1,6 @@
 #include <QQmlContext>
 #include "NodeInfoWindow.h"
-#include "Filter/Parser.h"
+#include "Executors/Parser.h"
 #include "MainWindowQml.h"
 
 namespace
@@ -42,6 +42,11 @@ void MainWindowQml::Search(const QVariant& searchKey)
    {
       m_treeModel->ApplyFilter(searchKey.toString());
    }
+}
+
+void MainWindowQml::ApplyRule(int row)
+{
+   m_treeModel->ApplyRule(m_rulesTableModel->GetRule(row));
 }
 
 void MainWindowQml::initializeWindowPtr()

@@ -1,6 +1,6 @@
 #include "NodeInfoWindow.h"
 #include <QQmlContext>
-#include "Filter/Filter.h"
+#include "Executors/Filter.h"
 #include "Data/XMLNode.h"
 namespace
 {
@@ -59,10 +59,8 @@ void NodeInfoWindow::initializeElements()
       m_nameField->setProperty("text", m_node->GetName());
    }
    m_valueField = getPointerForElementByName(ValueFieldStr);
-   qDebug() << m_node->GetValue();
    if (m_valueField)
    {
-      qDebug() << "set value";
       m_valueField->setProperty("text", m_node->GetValue());
    }
 }

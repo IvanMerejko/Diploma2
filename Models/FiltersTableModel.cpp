@@ -1,7 +1,7 @@
 #include "FiltersTableModel.h"
-#include "Filter/Parser.h"
-#include "Filter/Filter.h"
-#include "Filter/CompoundFilter.h"
+#include "Executors/Parser.h"
+#include "Executors/Filter.h"
+#include "Executors/CompoundFilter.h"
 #include <QFile>
 #include <QDebug>
 #include <QTextStream>
