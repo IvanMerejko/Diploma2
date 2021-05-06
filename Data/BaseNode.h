@@ -34,9 +34,12 @@ public:
    bool IsMatchFilter() const noexcept;
    SearchType GetMatchType() const noexcept;
    void ResetMatchFilter() noexcept;
+public slots:
+   void onAttributeDataChanged();
 signals:
    void onNodeMatchFilter(const NodePtr&);
    void onResetMatchFilter(const NodePtr&);
+   void onDataChanged();
 protected:
     QString m_name;
     QString m_value;

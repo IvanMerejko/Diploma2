@@ -19,6 +19,7 @@ public:
 
 public:
    Q_INVOKABLE void CreateNodeInfoWindow(const QModelIndex&);
+   Q_INVOKABLE void CreateNodeInfoWindow(int);
    Q_INVOKABLE void Search(const QVariant&);
    Q_INVOKABLE void ApplyRule(int);
 private:

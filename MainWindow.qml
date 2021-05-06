@@ -48,7 +48,7 @@ Window
    NewControls.Action
    {
        shortcut: "Ctrl+H"
-       onTriggered: Utils.expandAll()
+       onTriggered: Utils.expandChildrens(xmlTree.currentIndex)
    }
 
    FileDialog
@@ -56,6 +56,7 @@ Window
        id: fileDialog
        objectName: "fileDialog"
        title: "Please choose a file"
+       nameFilters: [ "Data files (*.json *.xml)" ]
        onAccepted:
        {
            treeModel.LoadData(basename(fileDialog.fileUrl.toString()))
@@ -82,6 +83,30 @@ Window
        }
       text: qsTr("Load File")
       onClicked: fileDialog.open()
+   }
+
+   NewControls.Button
+   {
+       id: saveFileButton
+       objectName: "SaveFileButton"
+       anchors.top: window.top
+       anchors.left: loadFileButton.right
+       anchors.leftMargin: 4
+       background: Rectangle
+       {
+           implicitWidth: 100
+           implicitHeight: 25
+           border.width: saveFileButton.activeFocus ? 2 : 1
+           border.color: "#888"
+           radius: 4
+           gradient: Gradient
+           {
+               GradientStop { position: 0 ; color: saveFileButton.pressed ? "#ccc" : "#eee" }
+               GradientStop { position: 1 ; color: saveFileButton.pressed ? "#aaa" : "#ccc" }
+           }
+       }
+      text: qsTr("Save File")
+//      onClicked: fileDialog.open()
    }
 
    OldControls.TreeView
@@ -113,39 +138,6 @@ Window
                  text: styleData.value
               }
            }
-           itemDelegate: Rectangle
-           {
-              color: "#00000000"
-              border.width: 0.5
-              Text
-              {
-                 anchors.fill: parent
-                 elide: Text.ElideRight
-                 text: styleData.value ? styleData.value : ""
-                 font.family: "Times New Roman"
-                 font.pixelSize: 14
-                 horizontalAlignment: Text.AlignLeft
-                 verticalAlignment: Text.AlignVCenter
-              }
-           }
-           rowDelegate: Rectangle
-           {
-               width: item.width
-               height: item.height
-               color:
-               {
-                  var isWhiteRow = styleData.row % 2;
-
-                  if (treeModel && treeModel.IsRowMathFilter(styleData.row))
-                  {
-                      return "green";
-                  }
-                  else
-                  {
-                      return isWhiteRow ? "white" : "#e0e0e0"
-                  }
-               }
-           }
        }
 
        OldControls.TableViewColumn
@@ -153,6 +145,40 @@ Window
            id: treeColumn
            width: xmlTree.width / xmlTree.columnCount
            role: "fileType"
+       }
+
+       itemDelegate: Rectangle
+       {
+          color: "transparent"
+          Text
+          {
+             anchors.fill: parent
+             elide: Text.ElideRight
+             text: styleData.value ? styleData.value : ""
+             font.family: "Times New Roman"
+             font.pixelSize: 14
+             horizontalAlignment: Text.AlignLeft
+             verticalAlignment: Text.AlignVCenter
+          }
+       }
+
+       rowDelegate: Rectangle
+       {
+           id: rowDelegateRect
+           width: item.width
+           height: item.height
+           color:
+           {
+              var isWhiteRow = styleData.row % 2;
+              if (treeModel && treeModel.IsRowMathFilter(styleData.row))
+              {
+                  return Utils.FilteringRowColor;
+              }
+              else
+              {
+                  return styleData.selected ? "lightblue" : isWhiteRow ? "white" : "#e0e0e0"
+              }
+           }
        }
 
        onDoubleClicked: mainWindowObject.CreateNodeInfoWindow(currentIndex)
@@ -211,12 +237,28 @@ Window
                color:
                {
                   var isSelectedRow = filterResultTable.currentRow === styleData.row;
-                  var isWhiteRow = styleData.row % 2;
-                  isSelectedRow? "green" : isWhiteRow ? "white" : "#e0e0e0"
+                   var isWhiteRow = styleData.row % 2;
+                   return isSelectedRow? "lightblue" : isWhiteRow ? "white" : "#e0e0e0"
                }
                Text
                {
                   id: textInRow
+               }
+               MouseArea
+               {
+                  anchors.bottom: parent.bottom
+                  width: parent.width
+                  anchors.fill: parent
+                  height: parent.height
+                  hoverEnabled: true
+                  onClicked:
+                  {
+                     filterResultTable.currentRow = styleData.row
+                  }
+                  onDoubleClicked:
+                  {
+                      mainWindowObject.CreateNodeInfoWindow(filterResultTable.currentRow)
+                  }
                }
            }
        }
@@ -225,7 +267,7 @@ Window
        {
           width: filterResultTable.width / filterResultTable.columnCount
           role: "result"
-          title: "result"
+          title: "Filtering results"
        }
    }
 }

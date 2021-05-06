@@ -12,28 +12,36 @@
 namespace
 {
 
-Nodes parseXMLElement(QXmlStreamReader& xmlStream, NodePtr parent = nullptr)
+Nodes parseXMLElement(QXmlStreamReader& xmlStream, const TreeModelPtr& model, NodePtr parent = nullptr)
 {
     Nodes nodes;
+    if (xmlStream.tokenType() == QXmlStreamReader::EndElement)
+    {
+       xmlStream.readNext();
+       return nodes;
+    }
+
     while(xmlStream.readNextStartElement())
     {
         NodePtr node = QSharedPointer<XMLNode>::create(parent);
+        QObject::connect(node.get(), &BaseNode::onDataChanged, model.get(), &TreeModel::onDataChanged);
         node->SetName(xmlStream.name().toString());
         Attributes attributes;
         for(const auto& attr : xmlStream.attributes())
         {
-            attributes.push_back(QSharedPointer<Attribute>::create(attr.name().toString(), attr.value().toString()));
+           const auto attribute = QSharedPointer<Attribute>::create(attr.name().toString(), attr.value().toString());
+           QObject::connect(attribute.get(), &Attribute::onDataChanged, model.get(), &TreeModel::onDataChanged);
+           attributes.push_back(attribute);
         }
         node->SetAttributes(attributes);
 
         xmlStream.readNext();
         if (!xmlStream.text().isNull())
         {
-           qDebug() << xmlStream.text();
            node->SetValue(xmlStream.text().toString());
         }
 
-        const auto childs = parseXMLElement(xmlStream, node);
+        const auto childs = parseXMLElement(xmlStream, model, node);
         for(const auto& child : childs)
         {
             node->AppendChild(child);
@@ -103,7 +111,7 @@ void parseJSONObject(const QJsonObject& jsonObject, const NodePtr& parent)
 }
 
 
-NodePtr DataBuilder::CreateXMLTree(QStringView fileName)
+NodePtr DataBuilder::CreateXMLTree(QStringView fileName, const TreeModelPtr& model)
 {
     try
     {
@@ -112,7 +120,7 @@ NodePtr DataBuilder::CreateXMLTree(QStringView fileName)
         QXmlStreamReader xmlReader{&xmlFile};
 
         NodePtr root = QSharedPointer<XMLNode>::create(nullptr);
-        const auto result = parseXMLElement(xmlReader, root);
+        const auto result = parseXMLElement(xmlReader, model, root);
         root->AppendChild(result[0]);
         return root;
     }
@@ -122,7 +130,7 @@ NodePtr DataBuilder::CreateXMLTree(QStringView fileName)
    }
 }
 
-NodePtr DataBuilder::CreateJSONTree(QStringView fileName)
+NodePtr DataBuilder::CreateJSONTree(QStringView fileName, const TreeModelPtr& tree)
 {
    try
    {

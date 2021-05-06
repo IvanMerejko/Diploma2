@@ -10,13 +10,24 @@ namespace
    constexpr auto AttributeValueStr = "value";
 }
 
-AttributesTableModel::AttributesTableModel(const NodePtr& node)
+AttributesTableModel::AttributesTableModel(const NodePtr& node, const TreeModelPtr& treeModel)
    : m_node{node}
+   , m_treeModel{treeModel}
 {
+}
+
+void AttributesTableModel::UpdateModel()
+{
+   beginResetModel();
+   endResetModel();
 }
 
 bool AttributesTableModel::IsItemMatchFilter(int row, int column) const
 {
+   if (row < 0 || row >  m_node->GetAttributes().size())
+   {
+      return false;
+   }
    const auto& attribute = m_node->GetAttributes().at(row);
    switch(column)
    {
@@ -27,6 +38,37 @@ bool AttributesTableModel::IsItemMatchFilter(int row, int column) const
       default:
          return false;
    }
+}
+
+void AttributesTableModel::OnAttributeValueChanged(int row, const QString& value)
+{
+   if (row < 0 || row >  m_node->GetAttributes().size())
+   {
+      return;
+   }
+   beginResetModel();
+   m_node->GetAttributes().at(row)->SetValue(value);
+   endResetModel();
+}
+
+void AttributesTableModel::OnAttributeNameChanged(int row, const QString& name)
+{
+   if (row < 0 || row >  m_node->GetAttributes().size())
+   {
+      return;
+   }
+   beginResetModel();
+   m_node->GetAttributes().at(row)->SetName(name);
+   endResetModel();
+}
+
+void AttributesTableModel::CreateNewAttribute()
+{
+   const auto attribute = QSharedPointer<Attribute>::create();
+   QObject::connect(attribute.get(), &Attribute::onDataChanged, m_treeModel.get(), &TreeModel::onDataChanged);
+   beginResetModel();
+   m_node->GetAttributes().push_back(attribute);
+   endResetModel();
 }
 
 void AttributesTableModel::DeleteAttribute(int row)

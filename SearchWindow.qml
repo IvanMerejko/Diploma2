@@ -102,7 +102,7 @@ Window
                 height: item.height
                 color:
                 {
-                   var isSelectedRow = filtersTable.currentRow == styleData.row;
+                   var isSelectedRow = filtersTable.currentRow === styleData.row;
                    var isWhiteRow = styleData.row % 2;
                    return isSelectedRow? "lightblue" : isWhiteRow ? "white" : "#e0e0e0"
                 }

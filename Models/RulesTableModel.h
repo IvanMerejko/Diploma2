@@ -15,7 +15,7 @@ private:
 public:
    RulesTableModel(const ActionsTableModelPtr&, const FiltersTableModelPtr&);
    ~RulesTableModel();
-   Q_INVOKABLE void AddRule(const QString& ruleName, const QString& filterName, const QString& actionName);
+   Q_INVOKABLE void AddRule(const QString& ruleName, int filterIndex, int actionIndex);
    Q_INVOKABLE void DeleteRule(int row);
    const RulePtr& GetRule(int) const noexcept;
 

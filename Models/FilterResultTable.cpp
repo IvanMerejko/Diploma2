@@ -10,6 +10,11 @@ QVariant FilterResultTableModel::data(const QModelIndex &index, int role) const
    return m_nodes.at(index.row())->GetData();
 }
 
+const NodePtr& FilterResultTableModel::GetNode(int index) const noexcept
+{
+   return m_nodes.at(index);
+}
+
 void FilterResultTableModel::addNode(const NodePtr& node)
 {
    m_nodes.push_back(node);

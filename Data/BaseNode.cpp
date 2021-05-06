@@ -46,13 +46,30 @@ void BaseNode::ApplyFilter(const QString& key)
    }
 }
 
-void BaseNode::AppendChild(const NodePtr child) { m_childs.push_back(child); }
+void BaseNode::AppendChild(const NodePtr child)
+{
+   m_childs.push_back(child);
+   onDataChanged();
+}
 
-void BaseNode::AddAttribute(const AttributePtr& attribute) { m_attributes.push_back(attribute); }
+void BaseNode::AddAttribute(const AttributePtr& attribute)
+{
+   m_attributes.push_back(attribute);
+   connect(attribute.get(), &Attribute::onDataChanged, this, &BaseNode::onAttributeDataChanged);
+   onDataChanged();
+}
 
-void BaseNode::SetAttributes(const Attributes& attributes) { m_attributes = attributes; }
+void BaseNode::SetAttributes(const Attributes& attributes)
+{
+   m_attributes = attributes;
+   onDataChanged();
+}
 
-void BaseNode::SetName(const QString& name) { m_name = name; }
+void BaseNode::SetName(const QString& name)
+{
+   m_name = name;
+   onDataChanged();
+}
 
 void BaseNode::SetMathFilter(const FilterPtr& filter)
 {
@@ -73,6 +90,7 @@ void BaseNode::SetValue(const QString& value)
    if (tmp.length() != 0)
    {
       m_value = value;
+      onDataChanged();
    }
 }
 
@@ -119,4 +137,9 @@ void BaseNode::ResetMatchFilter() noexcept
    m_isMatchFilter = false;
    m_matchType = SearchType::Unknown;
    onResetMatchFilter(GetPtr());
+}
+
+void BaseNode::onAttributeDataChanged()
+{
+   onDataChanged();
 }

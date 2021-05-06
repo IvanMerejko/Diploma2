@@ -36,6 +36,12 @@ namespace
    }
 }
 
+void TreeModel::onDataChanged()
+{
+   beginResetModel();
+   endResetModel();
+}
+
 TreeModel::TreeModel(QObject *parent)
     : QAbstractItemModel(parent)
     , m_rootItem{nullptr}
@@ -50,11 +56,11 @@ void TreeModel::LoadData(const QString& fileName)
 
    if (fileType == "xml")
    {
-      m_rootItem = DataBuilder::CreateXMLTree(fileName);
+      m_rootItem = DataBuilder::CreateXMLTree(fileName, sharedFromThis());
    }
    else if (fileType == "json")
    {
-      m_rootItem = DataBuilder::CreateJSONTree(fileName);
+      m_rootItem = DataBuilder::CreateJSONTree(fileName, sharedFromThis());
    }
    else
    {

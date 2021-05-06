@@ -29,7 +29,12 @@ MainWindowQml::MainWindowQml(const QString& file)
 
 void MainWindowQml::CreateNodeInfoWindow(const QModelIndex& index)
 {
-   m_displayNodeInfos.append(NodeInfoWindowPtr::create(m_treeModel->GetNode(index)));
+   m_displayNodeInfos.append(NodeInfoWindowPtr::create(m_treeModel->GetNode(index), m_treeModel));
+}
+
+void MainWindowQml::CreateNodeInfoWindow(int index)
+{
+   m_displayNodeInfos.append(NodeInfoWindowPtr::create(m_filterResultModel->GetNode(index), m_treeModel));
 }
 
 void MainWindowQml::Search(const QVariant& searchKey)
@@ -41,6 +46,10 @@ void MainWindowQml::Search(const QVariant& searchKey)
    else if (searchKey.userType() == QMetaType::QString)
    {
       m_treeModel->ApplyFilter(searchKey.toString());
+   }
+   for(const auto& displayNodes : m_displayNodeInfos)
+   {
+      displayNodes->OnFiltering();
    }
 }
 

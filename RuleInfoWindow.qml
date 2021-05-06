@@ -60,17 +60,16 @@ Window
         }
     }
 
-    TextField
+    ComboBox
     {
-        id: actionNameField
-        font.family: "Times New Roman"
-        font.pixelSize: 14
+        id: actionNameBox
         height: actionNameTextRectangle.height
         width: ruleInfoWindow.width - actionNameTextRectangle.width
         anchors.left: ruleNameTextRectangle.right
         anchors.top: ruleNameField.bottom
         anchors.leftMargin: 4
         anchors.topMargin: 1
+        model: actionsTableModel.GetActionsName()
     }
 
     Rectangle
@@ -93,17 +92,16 @@ Window
         }
     }
 
-    TextField
+    ComboBox
     {
-        id: filterNameField
-        font.family: "Times New Roman"
-        font.pixelSize: 14
-        height: filterNameTextRectangle.height
-        width: ruleInfoWindow.width - filterNameTextRectangle.width
-        anchors.left: filterNameTextRectangle.right
-        anchors.top: actionNameField.bottom
+        id: filtersNameBox
+        height: actionNameTextRectangle.height
+        width: ruleInfoWindow.width - actionNameTextRectangle.width
+        anchors.left: ruleNameTextRectangle.right
+        anchors.top: actionNameBox.bottom
         anchors.leftMargin: 4
         anchors.topMargin: 1
+        model: filtersModel.GetFiltersName()
     }
 
 
@@ -130,7 +128,7 @@ Window
        text: qsTr("Create")
        onClicked:
        {
-           rulesTableModel.AddRule(ruleNameField.text, filterNameField.text, actionNameField.text)
+           rulesTableModel.AddRule(ruleNameField.text, filtersNameBox.currentIndex, actionNameBox.currentIndex)
        }
     }
     onClosing:

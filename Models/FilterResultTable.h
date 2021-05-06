@@ -7,6 +7,7 @@ class FilterResultTableModel : public QAbstractTableModel
    Q_OBJECT
 public:
    FilterResultTableModel() = default;
+   const NodePtr& GetNode(int) const noexcept;
 public slots:
    void addNode(const NodePtr&);
    void removeNode(const NodePtr&);

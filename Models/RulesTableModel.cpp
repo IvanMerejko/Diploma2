@@ -18,10 +18,10 @@ RulesTableModel::~RulesTableModel()
    saveToFile();
 }
 
-void RulesTableModel::AddRule(const QString& ruleName, const QString& filterName, const QString& actionName)
+void RulesTableModel::AddRule(const QString& ruleName, int filterIndex, int actionIndex)
 {
-   const auto& filter = m_filters->GetFilterByName(filterName);
-   const auto& action = m_actions->GetActionByName(actionName);
+   const auto& filter = m_filters->GetFilter(filterIndex);
+   const auto& action = m_actions->GetAction(actionIndex);
    if (filter && action)
    {
       beginResetModel();
@@ -104,7 +104,14 @@ void RulesTableModel::readFromFile()
    {
       QString line = in.readLine();
       auto pieces = line.split(  "\\_/" );
-      AddRule(pieces[0], pieces[1], pieces[2]);
+      const auto& filter = m_filters->GetFilterByName(pieces[1]);
+      const auto& action = m_actions->GetActionByName(pieces[2]);
+      if (filter && action)
+      {
+         beginResetModel();
+         m_rules.push_back(RulePtr::create(pieces[0], filter, action));
+         endResetModel();
+      }
    }
    infile.close();
 }

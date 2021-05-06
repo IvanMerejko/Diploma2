@@ -1,10 +1,11 @@
 #pragma once
 #include "XMLNode.h"
+#include "Models/TreeModel.h"
 
 class DataBuilder
 {
 public:
-   static NodePtr CreateXMLTree(QStringView);
-   static NodePtr CreateJSONTree(QStringView);
+   static NodePtr CreateXMLTree(QStringView, const TreeModelPtr&);
+   static NodePtr CreateJSONTree(QStringView, const TreeModelPtr&);
 };
 

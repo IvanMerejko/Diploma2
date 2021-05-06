@@ -15,8 +15,9 @@ private:
 public:
    FiltersTableModel();
    ~FiltersTableModel();
-   Q_INVOKABLE void AddFilter(const QString& name, const QString& value, int searchType, int searchAction);
+   Q_INVOKABLE QString AddFilter(const QString& name, const QString& value, int searchType, int searchAction);
    Q_INVOKABLE void DeleteFilter(int row);
+   Q_INVOKABLE QVariantList GetFiltersName() const noexcept;
    const FilterPtr& GetFilter(int) const;
    const FilterPtr GetFilterByName(const QString& name) const;
 

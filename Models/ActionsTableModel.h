@@ -19,6 +19,8 @@ public:
    ~ActionsTableModel();
    Q_INVOKABLE void DeleteAction(int row);
    Q_INVOKABLE void AddAction(const QString& actionName, int actionType, const QString& name, const QString& value);
+   Q_INVOKABLE QVariantList GetActionsName() const noexcept;
+   const ActionPtr& GetAction(int) const;
    const ActionPtr GetActionByName(const QString& actionName) const;
 
 protected:

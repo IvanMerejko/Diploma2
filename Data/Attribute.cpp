@@ -46,11 +46,13 @@ void Attribute::SetMathFilter(const FilterPtr& filter)
 void Attribute::SetName(const QString& name)
 {
    m_name = name;
+   onDataChanged();
 }
 
 void Attribute::SetValue(const QString& value)
 {
    m_value = value;
+   onDataChanged();
 }
 
 const QString& Attribute::GetName() const noexcept

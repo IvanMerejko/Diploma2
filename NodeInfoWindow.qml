@@ -2,6 +2,7 @@ import QtQuick 2.12
 import QtQuick.Window 2.2
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
+import "Utils.js" as Utils
 Window
 {
     visible: true
@@ -10,6 +11,24 @@ Window
     title: "Node Info"
     width: 400
     height: 500
+    Action
+    {
+       shortcut: "Ctrl+A"
+       onTriggered: attributtesModel.CreateNewAttribute()
+    }
+
+    Action
+    {
+       shortcut: "F5"
+       onTriggered:
+       {
+           console.log("updatge")
+           nameField.update()
+           valueField.update()
+       }
+
+    }
+
     Rectangle
     {
         id: nameTextRectangle
@@ -38,7 +57,8 @@ Window
         width: nodeInfoWindow.width - nameTextRectangle.width - 20
         anchors.left: nameTextRectangle.right
         anchors.leftMargin: 4
-        textColor: nodeInfoWindowObject.IsNameMatchFilter() ? "green" : "black"
+        textColor: nodeInfoWindowObject.IsNameMatchFilter() ? Utils.FilteringValueColor : "black"
+        onEditingFinished: Utils.expandAll()
     }
 
     Rectangle
@@ -71,7 +91,8 @@ Window
         anchors.left: valueTextRectangle.right
         anchors.top: nameField.bottom
         anchors.leftMargin: 4
-        textColor: nodeInfoWindowObject.IsValueMatchFilter() ? "green" : "black"
+        textColor: nodeInfoWindowObject.IsValueMatchFilter() ? Utils.FilteringValueColor : "black"
+        onEditingFinished: Utils.expandAll()
     }
 
     Rectangle
@@ -122,7 +143,7 @@ Window
             itemDelegate: Rectangle
             {
                border.width: 0.5
-               color: attributtesModel && attributtesModel.IsItemMatchFilter(styleData.row, styleData.column) ? "green" : "#00000000"
+               color: attributtesModel && attributtesModel.IsItemMatchFilter(styleData.row, styleData.column) ? Utils.FilteringRowColor : "#00000000"
                Text
                {
                   anchors.fill: parent
@@ -133,6 +154,57 @@ Window
                   horizontalAlignment: Text.AlignHCenter
                   verticalAlignment: Text.AlignVCenter
                }
+               MouseArea
+               {
+                   id: cellMouseArea
+                   anchors.fill: parent
+                   onClicked:
+                   {
+                        attributeLoader.visible = true
+                        attributeLoader.item.forceActiveFocus()
+                   }
+               }
+
+               Loader
+               {
+                   id: attributeLoader
+                   anchors { verticalCenter: parent.verticalCenter; left: parent.left}
+                   height: parent.height
+                   width: parent.width
+                   visible: false
+                   sourceComponent: visible ? input : undefined
+                   Component
+                   {
+                       id: input
+                       TextField
+                       {
+                           anchors { fill: parent }
+                           text: styleData.value
+                           onEditingFinished:
+                           {
+                               if (styleData.column === 0)
+                               {
+                                   attributtesModel.OnAttributeNameChanged(styleData.row, text)
+                                   Utils.expandAll()
+                               }
+                               else
+                               {
+                                   attributtesModel.OnAttributeValueChanged(styleData.row, text)
+                                   Utils.expandAll()
+                               }
+                               attributeLoader.visible = false
+                           }
+
+                           onActiveFocusChanged:
+                           {
+                                if (!activeFocus)
+                                {
+                                    attributeLoader.visible = false
+                                }
+                           }
+                       }
+                   }
+               }
             }
             rowDelegate: Rectangle
             {
@@ -141,8 +213,8 @@ Window
                 color:
                 {
                    var isSelectedRow = attributesTable.currentRow === styleData.row;
-                   var isWhiteRow = styleData.row % 2;
-                   isSelectedRow? "green" : isWhiteRow ? "white" : "#e0e0e0"
+                    var isWhiteRow = styleData.row % 2;
+                    return isSelectedRow? "lightblue" : isWhiteRow ? "white" : "#e0e0e0"
                 }
                 Text
                 {

@@ -78,6 +78,21 @@ void ActionsTableModel::AddAction(const QString& actionName, int actionType, con
    }
 }
 
+QVariantList ActionsTableModel::GetActionsName() const noexcept
+{
+   QVariantList list;
+   for(const auto& action : m_actions)
+   {
+      list.append(action->GetActionName());
+   }
+   return list;
+}
+
+const ActionPtr& ActionsTableModel::GetAction(int index) const
+{
+   return m_actions.at(index);
+}
+
 const ActionPtr ActionsTableModel::GetActionByName(const QString& actionName) const
 {
    return findAction(actionName);

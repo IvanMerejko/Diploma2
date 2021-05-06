@@ -1,4 +1,5 @@
 import QtQuick 2.12
+import QtQuick.Dialogs 1.2
 import QtQuick.Window 2.2
 import QtQuick.Controls 1.4
 import QtQuick.Controls 2.15 as NewControls
@@ -137,6 +138,16 @@ Window
         model: [ "Equal", "NotEqual", "Contains", "NotContains" ]
     }
 
+    MessageDialog
+    {
+        id: errorMessage
+        title: "Error"
+        visible: false
+        icon: StandardIcon.Critical
+        standardButtons: StandardButton.Ok
+    }
+
+
     NewControls.Button
     {
         id: createButton
@@ -160,7 +171,12 @@ Window
        text: qsTr("Create")
        onClicked:
        {
-           filtersModel.AddFilter(filterNameField.text, filterValueField.text, searchTypeBox.currentIndex, searchActionBox.currentIndex)
+           var error = filtersModel.AddFilter(filterNameField.text, filterValueField.text, searchTypeBox.currentIndex, searchActionBox.currentIndex)
+           if (error.length !== 0)
+           {
+               errorMessage.text = "Incorrect Compound filter expression! Please check your input." + " Details: " + error
+               errorMessage.visible = true
+           }
        }
     }
     onClosing:

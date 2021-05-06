@@ -5,7 +5,8 @@
 #include "Data/BaseNode.h"
 #include "Types.h"
 
-class TreeModel : public QAbstractItemModel
+class TreeModel : public QAbstractItemModel,
+      public QEnableSharedFromThis<TreeModel>
 {
     Q_OBJECT
 private:
@@ -13,6 +14,8 @@ private:
    {
        FileType = Qt::UserRole + 1
    };
+public slots:
+   void onDataChanged();
 signals:
    void onNodesReload(const NodePtr);
    void onFilteringStarted();

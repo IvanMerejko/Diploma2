@@ -1,6 +1,7 @@
 #include "NodeInfoWindow.h"
 #include <QQmlContext>
 #include "Executors/Filter.h"
+#include "Data/Attribute.h"
 #include "Data/XMLNode.h"
 namespace
 {
@@ -10,9 +11,11 @@ namespace
    constexpr auto ValueFieldStr = "valueField";
 }
 
-NodeInfoWindow::NodeInfoWindow(const NodePtr& node)
+NodeInfoWindow::NodeInfoWindow(const NodePtr& node, const TreeModelPtr& treeModel)
    : m_node{node}
-   , m_attributesModel{AttributesTableModelPtr::create(m_node)}
+   , m_attributesModel{AttributesTableModelPtr::create(m_node, treeModel)}
+   , m_treeModel{treeModel}
+
 {
    initializeRootContext();
    load("qrc:/NodeInfoWindow.qml");
@@ -32,7 +35,20 @@ bool NodeInfoWindow::IsValueMatchFilter() const
 {
    return m_node->IsMatchFilter() &&
          (m_node->GetMatchType() == SearchType::Value ||
-         m_node->GetMatchType() == SearchType::BothNodeTypes);
+          m_node->GetMatchType() == SearchType::BothNodeTypes);
+}
+
+void NodeInfoWindow::OnFiltering()
+{
+   if (IsValueMatchFilter())
+   {
+      m_valueField->setProperty("textColor", "green");
+   }
+   if (IsNameMatchFilter())
+   {
+      m_nameField->setProperty("textColor", "green");
+   }
+   m_attributesModel->UpdateModel();
 }
 
 void NodeInfoWindow::onNameChanged()
@@ -49,6 +65,7 @@ void NodeInfoWindow::initializeRootContext()
 {
    rootContext()->setContextProperty(AttributesModeStr, m_attributesModel.get());
    rootContext()->setContextProperty(NodeInfoWindowStr, this);
+   rootContext()->setContextProperty("treeModel", m_treeModel.get());
 }
 
 void NodeInfoWindow::initializeElements()

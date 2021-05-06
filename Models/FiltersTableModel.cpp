@@ -17,25 +17,34 @@ FiltersTableModel::~FiltersTableModel()
    saveToFile();
 }
 
-void FiltersTableModel::AddFilter(const QString& name, const QString& value, int searchType, int searchAction)
+QString FiltersTableModel::AddFilter(const QString& name, const QString& value, int searchType, int searchAction)
 {
    if (!findFilter(name))
    {
-      beginResetModel();
       if (const auto searchTypeEnum = static_cast<SearchType>(searchType);
           searchTypeEnum == SearchType::Compound)
       {
-         if (const auto filter = Parser::ParseExpression(name, value.toStdString(),  m_filters))
+         QString error;
+         if (const auto filter = Parser::ParseExpression(name, value.toStdString(),  m_filters, error))
          {
+
             m_filters.append(filter);
+            endResetModel();
+         }
+         else
+         {
+            return error;
          }
       }
       else
       {
+         beginResetModel();
          m_filters.append(QSharedPointer<Filter>::create(name, value, static_cast<SearchType>(searchType), static_cast<SearchAction>(searchAction)));
+         endResetModel();
       }
-      endResetModel();
+
    }
+   return "";
 }
 
 void FiltersTableModel::DeleteFilter(int row)
@@ -43,6 +52,16 @@ void FiltersTableModel::DeleteFilter(int row)
    beginResetModel();
    m_filters.erase(std::remove(m_filters.begin(), m_filters.end(), m_filters[row]), m_filters.end());
    endResetModel();
+}
+
+QVariantList FiltersTableModel::GetFiltersName() const noexcept
+{
+   QVariantList list;
+   for(const auto& filter : m_filters)
+   {
+      list.append(filter->GetName());
+   }
+   return list;
 }
 
 const FilterPtr& FiltersTableModel::GetFilter(int row) const
@@ -124,7 +143,11 @@ void FiltersTableModel::readFromFile()
       const auto searchType = static_cast<SearchType>(pieces[2].toInt());
       if (searchType == SearchType::Compound)
       {
-         m_filters.append(Parser::ParseExpression(pieces[0], pieces[1].toStdString(),  m_filters));
+         QString error;
+         if (const auto filter = Parser::ParseExpression(pieces[0], pieces[1].toStdString(),  m_filters, error))
+         {
+            m_filters.append(filter);
+         }
       }
       else
       {

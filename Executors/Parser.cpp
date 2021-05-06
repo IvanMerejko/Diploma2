@@ -120,7 +120,7 @@ template <typename It, typename Skipper = qi::space_type>
 };
 }
 
-FilterPtr Parser::ParseExpression(const QString& name, std::string expression, const Filters& filters)
+FilterPtr Parser::ParseExpression(const QString& name, std::string expression, const Filters& filters, QString& error)
 {
    if (!expression.empty() && expression[expression.length() - 1] != ';')
    {
@@ -140,18 +140,19 @@ FilterPtr Parser::ParseExpression(const QString& name, std::string expression, c
       }
       else
       {
-         qDebug() << "invalid input\n";
          return nullptr;
       }
    }
    catch (const qi::expectation_failure<decltype(f)>& e)
    {
-       qDebug() << "expectation_failure at \n";
-       return nullptr;
+      error = "Incorrect expression";
+      qDebug() << "expectation_failure at \n";
+      return nullptr;
    }
-   catch (const std::exception&)
+   catch (const std::exception& e)
    {
-      qDebug() << "exception\n";
+      error = e.what();
+      qDebug() << "exception " <<  e.what() << "\n";
       return nullptr;
    }
 

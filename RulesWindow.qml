@@ -91,8 +91,8 @@ Window
                 color:
                 {
                    var isSelectedRow = rulesTable.currentRow == styleData.row;
-                   var isWhiteRow = styleData.row % 2;
-                   return isSelectedRow? "lightblue" : isWhiteRow ? "white" : "#e0e0e0"
+                    var isWhiteRow = styleData.row % 2;
+                    return isSelectedRow? "lightblue" : isWhiteRow ? "white" : "#e0e0e0"
                 }
                 MouseArea
                 {
@@ -257,8 +257,8 @@ Window
                 color:
                 {
                    var isSelectedRow = actionsTable.currentRow == styleData.row;
-                   var isWhiteRow = styleData.row % 2;
-                   return isSelectedRow? "lightblue" : isWhiteRow ? "white" : "#e0e0e0"
+                    var isWhiteRow = styleData.row % 2;
+                    return isSelectedRow? "lightblue" : isWhiteRow ? "white" : "#e0e0e0"
                 }
                 MouseArea
                 {

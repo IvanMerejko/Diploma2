@@ -1,9 +1,11 @@
 #pragma once
 #include <QString>
 #include "Executors/BaseFilter.h"
-class Attribute
+class Attribute : public QObject
 {
+   Q_OBJECT
 public:
+   Attribute() = default;
    Attribute(const QString&, const QString&);
    void ApplyFilter(const QString&);
    void SetMathFilter(const FilterPtr&);
@@ -14,6 +16,8 @@ public:
    bool IsMatchFilter() const noexcept;
    SearchType GetMatchType() const noexcept;
    void ResetMatchFilter() noexcept;
+signals:
+   void onDataChanged();
 private:
    QString m_name;
    QString m_value;
