@@ -53,6 +53,7 @@ void TreeModel::LoadData(const QString& fileName)
    beginResetModel();
    m_rootItem.reset();
    const auto& fileType = fileName.right(fileName.length() - fileName.indexOf(".") - 1);
+   m_fileName = fileName;
 
    if (fileType == "xml")
    {
@@ -90,6 +91,11 @@ bool TreeModel::IsRowMathFilter(int row) const
    int currentNodeIndex = 0;
 
    return row != -1 && m_rootItem && m_rootItem->GetChilds().size() == 1 && isNodeMatchFilter(m_rootItem->GetChilds()[0], currentNodeIndex, row);
+}
+
+void TreeModel::Save()
+{
+   DataBuilder::SaveXMLTree(m_rootItem, m_fileName);
 }
 
 void TreeModel::ApplyFilter(const FilterPtr& filter)

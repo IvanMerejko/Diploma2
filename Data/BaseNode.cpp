@@ -139,6 +139,11 @@ void BaseNode::ResetMatchFilter() noexcept
    onResetMatchFilter(GetPtr());
 }
 
+void BaseNode::DataChanged() noexcept
+{
+   onDataChanged();
+}
+
 void BaseNode::onAttributeDataChanged()
 {
    onDataChanged();

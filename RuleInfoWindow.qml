@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Window 2.2
 import QtQuick.Controls 1.4
+import QtQuick.Dialogs 1.2
 import QtQuick.Controls 2.15 as NewControls
 import QtQuick.Controls.Styles 1.4
 Window
@@ -103,6 +104,14 @@ Window
         anchors.topMargin: 1
         model: filtersModel.GetFiltersName()
     }
+    MessageDialog
+    {
+        id: errorMessage
+        title: "Error"
+        visible: false
+        icon: StandardIcon.Critical
+        standardButtons: StandardButton.Ok
+    }
 
 
     NewControls.Button
@@ -128,7 +137,12 @@ Window
        text: qsTr("Create")
        onClicked:
        {
-           rulesTableModel.AddRule(ruleNameField.text, filtersNameBox.currentIndex, actionNameBox.currentIndex)
+           var error = rulesTableModel.AddRule(ruleNameField.text, filtersNameBox.currentIndex, actionNameBox.currentIndex)
+           if (error.length !== 0)
+           {
+               errorMessage.text = error
+               errorMessage.visible = true
+           }
        }
     }
     onClosing:

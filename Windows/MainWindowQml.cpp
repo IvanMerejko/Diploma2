@@ -53,6 +53,11 @@ void MainWindowQml::Search(const QVariant& searchKey)
    }
 }
 
+void MainWindowQml::Save()
+{
+   m_treeModel->Save();
+}
+
 void MainWindowQml::ApplyRule(int row)
 {
    m_treeModel->ApplyRule(m_rulesTableModel->GetRule(row));

@@ -18,15 +18,23 @@ RulesTableModel::~RulesTableModel()
    saveToFile();
 }
 
-void RulesTableModel::AddRule(const QString& ruleName, int filterIndex, int actionIndex)
+QString RulesTableModel::AddRule(const QString& ruleName, int filterIndex, int actionIndex)
 {
-   const auto& filter = m_filters->GetFilter(filterIndex);
-   const auto& action = m_actions->GetAction(actionIndex);
-   if (filter && action)
+   if (findRule(ruleName))
    {
-      beginResetModel();
-      m_rules.push_back(RulePtr::create(ruleName, filter, action));
-      endResetModel();
+      return "Rule with name \"" + ruleName + "\" already exists.";
+   }
+   else
+   {
+      const auto& filter = m_filters->GetFilter(filterIndex);
+      const auto& action = m_actions->GetAction(actionIndex);
+      if (filter && action)
+      {
+         beginResetModel();
+         m_rules.push_back(RulePtr::create(ruleName, filter, action));
+         endResetModel();
+      }
+      return "";
    }
 }
 
@@ -114,4 +122,10 @@ void RulesTableModel::readFromFile()
       }
    }
    infile.close();
+}
+
+const RulePtr RulesTableModel::findRule(const QString& ruleName) const noexcept
+{
+   const auto it = std::find_if(m_rules.begin(), m_rules.end(), [ruleName](const auto& filter) { return filter->GetName() == ruleName; });
+   return it == m_rules.end() ? nullptr : *it;
 }

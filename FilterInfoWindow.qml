@@ -174,7 +174,7 @@ Window
            var error = filtersModel.AddFilter(filterNameField.text, filterValueField.text, searchTypeBox.currentIndex, searchActionBox.currentIndex)
            if (error.length !== 0)
            {
-               errorMessage.text = "Incorrect Compound filter expression! Please check your input." + " Details: " + error
+               errorMessage.text = error
                errorMessage.visible = true
            }
        }

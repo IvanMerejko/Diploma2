@@ -106,7 +106,7 @@ Window
            }
        }
       text: qsTr("Save File")
-//      onClicked: fileDialog.open()
+      onClicked: mainWindowObject.Save()
    }
 
    OldControls.TreeView

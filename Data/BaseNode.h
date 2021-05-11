@@ -34,6 +34,7 @@ public:
    bool IsMatchFilter() const noexcept;
    SearchType GetMatchType() const noexcept;
    void ResetMatchFilter() noexcept;
+   void DataChanged() noexcept;
 public slots:
    void onAttributeDataChanged();
 signals:

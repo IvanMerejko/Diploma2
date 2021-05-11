@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.2
+import QtQuick.Dialogs 1.2
 import QtQuick.Controls 1.4
 import QtQuick.Controls 2.15 as NewControls
 import QtQuick.Controls.Styles 1.4
@@ -141,6 +142,15 @@ Window
         anchors.topMargin: 1
     }
 
+    MessageDialog
+    {
+        id: errorMessage
+        title: "Error"
+        visible: false
+        icon: StandardIcon.Critical
+        standardButtons: StandardButton.Ok
+    }
+
 
     NewControls.Button
     {
@@ -165,7 +175,12 @@ Window
        text: qsTr("Create")
        onClicked:
        {
-           actionsTableModel.AddAction(actionNameField.text, actionTypeBox.currentIndex, nameField.text, valueField.text)
+           var error = actionsTableModel.AddAction(actionNameField.text, actionTypeBox.currentIndex, nameField.text, valueField.text)
+           if (error.length !== 0)
+           {
+               errorMessage.text = error
+               errorMessage.visible = true
+           }
        }
     }
     onClosing:

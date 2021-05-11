@@ -49,7 +49,7 @@ void ActionsTableModel::DeleteAction(int row)
    endResetModel();
 }
 
-void ActionsTableModel::AddAction(const QString& actionName, int actionType, const QString& name, const QString& value)
+QString ActionsTableModel::AddAction(const QString& actionName, int actionType, const QString& name, const QString& value)
 {
    if (!findAction(actionName))
    {
@@ -75,6 +75,11 @@ void ActionsTableModel::AddAction(const QString& actionName, int actionType, con
       }
       m_actions.append(newAction);
       endResetModel();
+      return "";
+   }
+   else
+   {
+      return "Action with name \"" + actionName + "\" already exists.";
    }
 }
 

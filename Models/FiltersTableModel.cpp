@@ -33,7 +33,7 @@ QString FiltersTableModel::AddFilter(const QString& name, const QString& value, 
          }
          else
          {
-            return error;
+            return "Incorrect Compound filter expression! Please check your input. Details:" +  error;
          }
       }
       else
@@ -42,7 +42,9 @@ QString FiltersTableModel::AddFilter(const QString& name, const QString& value, 
          m_filters.append(QSharedPointer<Filter>::create(name, value, static_cast<SearchType>(searchType), static_cast<SearchAction>(searchAction)));
          endResetModel();
       }
-
+   }
+   {
+      return "Filter with name \"" + name + "\" already exists.";
    }
    return "";
 }

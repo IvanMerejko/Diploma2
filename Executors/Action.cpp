@@ -55,6 +55,7 @@ void Action::ApplyAction(const NodePtr& node) const noexcept
          addAttribute(node);
          break;
    }
+   node->DataChanged();
 }
 
 const QString& Action::GetActionName() const noexcept
@@ -100,7 +101,7 @@ void Action::deleteAttribute(const NodePtr& node) const noexcept
       [](const auto& attribute)
    {
       return attribute->IsMatchFilter();
-   }));
+   }),  attributes.end());
 }
 
 void Action::modifyAttributeValue(const NodePtr& node) const noexcept

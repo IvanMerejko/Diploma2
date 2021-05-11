@@ -6,6 +6,7 @@ import QtQuick.Controls.Styles 1.4
 import "Utils.js" as Utils
 Window
 {
+    property bool isRuleLastSelected: false
     visible: true
     id: rulesWindow
     objectName: "rulesWindow"
@@ -16,14 +17,17 @@ Window
     NewControls.Action
     {
         shortcut: "Delete"
-//        onTriggered:
-//        {
-//            if (actionsTable.currentRow != -1)
-//            {
-//                filtersModel.DeleteFilter(actionsTable.currentRow )
-//            }
-
-//        }
+        onTriggered:
+        {
+            if (rulesTable.currentRow != -1 && isRuleLastSelected)
+            {
+                rulesTableModel.DeleteRule(rulesTable.currentRow)
+            }
+            else if (actionsTable.currentRow != -1)
+            {
+                actionsTableModel.DeleteAction(actionsTable.currentRow)
+            }
+        }
     }
 
     Rectangle
@@ -104,6 +108,7 @@ Window
                    onClicked:
                    {
                       rulesTable.currentRow = styleData.row
+                      isRuleLastSelected = true
                    }
                 }
             }
@@ -270,6 +275,7 @@ Window
                    onClicked:
                    {
                       actionsTable.currentRow = styleData.row
+                       isRuleLastSelected = false
                    }
                 }
             }

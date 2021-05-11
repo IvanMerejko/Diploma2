@@ -58,7 +58,7 @@ Window
         anchors.left: nameTextRectangle.right
         anchors.leftMargin: 4
         textColor: nodeInfoWindowObject.IsNameMatchFilter() ? Utils.FilteringValueColor : "black"
-        onEditingFinished: Utils.expandAll()
+//        onEditingFinished: Utils.expandAll()
     }
 
     Rectangle
@@ -92,7 +92,7 @@ Window
         anchors.top: nameField.bottom
         anchors.leftMargin: 4
         textColor: nodeInfoWindowObject.IsValueMatchFilter() ? Utils.FilteringValueColor : "black"
-        onEditingFinished: Utils.expandAll()
+//        onEditingFinished: Utils.expandAll()
     }
 
     Rectangle

@@ -2,6 +2,7 @@
 #include "Data/XMLNode.h"
 #include "Data/JsonNode.h"
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 #include <QJsonDocument>
 #include <QFile>
 #include <QDebug>
@@ -11,6 +12,34 @@
 
 namespace
 {
+
+void saveXMLElement(QXmlStreamWriter& xmlWriter, const NodePtr& node)
+{
+   if (node->GetValue().length() == 0)
+   {
+      xmlWriter.writeStartElement(node->GetName());
+      for(const auto& attribut : node->GetAttributes())
+      {
+         xmlWriter.writeAttribute(attribut->GetName(), attribut->GetValue());
+      }
+      for(const auto& child : node->GetChilds())
+      {
+         saveXMLElement(xmlWriter, child);
+      }
+      xmlWriter.writeEndElement();
+   }
+   else
+   {
+      xmlWriter.writeStartElement(node->GetName());
+      for(const auto& attribut : node->GetAttributes())
+      {
+         xmlWriter.writeAttribute(attribut->GetName(), attribut->GetValue());
+      }
+      xmlWriter.writeCharacters(node->GetValue());
+      xmlWriter.writeEndElement();
+   }
+
+}
 
 Nodes parseXMLElement(QXmlStreamReader& xmlStream, const TreeModelPtr& model, NodePtr parent = nullptr)
 {
@@ -121,6 +150,10 @@ NodePtr DataBuilder::CreateXMLTree(QStringView fileName, const TreeModelPtr& mod
 
         NodePtr root = QSharedPointer<XMLNode>::create(nullptr);
         const auto result = parseXMLElement(xmlReader, model, root);
+        if (result.length() != 1)
+        {
+           return nullptr;
+        }
         root->AppendChild(result[0]);
         return root;
     }
@@ -145,5 +178,22 @@ NodePtr DataBuilder::CreateJSONTree(QStringView fileName, const TreeModelPtr& tr
    catch(...)
    {
        return nullptr;
-  }
+   }
+}
+
+void DataBuilder::SaveXMLTree(const NodePtr& root, const QString& fileName)
+{
+   if (!root)
+   {
+      return;
+   }
+   qDebug() << fileName;
+   QFile file(fileName);
+   file.open(QIODevice::WriteOnly);
+   QXmlStreamWriter xmlWriter(&file);
+   xmlWriter.setAutoFormatting(true);
+   xmlWriter.writeStartDocument();
+   saveXMLElement(xmlWriter, root->GetChilds()[0]);
+   xmlWriter.writeEndDocument();
+   file.close();
 }
